@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "1090978475919",
+    "project_id": "journalapp-4b013",
+    "storage_bucket": "journalapp-4b013.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090978475919:android:b3e098cd6465f3882f65fa",
+        "android_client_info": {
+          "package_name": "com.ahmed.instagramclone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMCZtKsXRUYYIpM_zSWMAH5X6FET7pcDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090978475919:android:13eb2479e0b7c3682f65fa",
+        "android_client_info": {
+          "package_name": "com.example.ecommerceadminapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMCZtKsXRUYYIpM_zSWMAH5X6FET7pcDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090978475919:android:c5c5e61b003066992f65fa",
+        "android_client_info": {
+          "package_name": "com.example.ecommerceapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMCZtKsXRUYYIpM_zSWMAH5X6FET7pcDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090978475919:android:e116a964006364392f65fa",
+        "android_client_info": {
+          "package_name": "com.example.journal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMCZtKsXRUYYIpM_zSWMAH5X6FET7pcDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090978475919:android:685693f4afe6218d2f65fa",
+        "android_client_info": {
+          "package_name": "com.example.journalapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMCZtKsXRUYYIpM_zSWMAH5X6FET7pcDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
