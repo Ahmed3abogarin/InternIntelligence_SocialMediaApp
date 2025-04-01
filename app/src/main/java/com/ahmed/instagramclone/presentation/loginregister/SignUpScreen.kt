@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.loginregister
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,14 +19,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,14 +43,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.presentation.navgraph.Route
+import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.domain.model.User
 
 @Composable
 fun SignUpScreen(navController: NavController) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val viewModel: RegisterViewModel = hiltViewModel()
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+
+   val state =  viewModel.state.value
+    when(state){
+        is Resource.Loading -> {
+            Toast.makeText(context,"Loading",Toast.LENGTH_SHORT).show()
+        }
+        is Resource.Success ->{
+            Toast.makeText(context,"User created",Toast.LENGTH_SHORT).show()
+        }
+        is Resource.Error -> {
+            Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+        }
+        else -> Unit
+    }
+
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.p2),
@@ -68,7 +106,10 @@ fun SignUpScreen(navController: NavController) {
             Text(
                 modifier = Modifier.align(Alignment.Center),
                 text = "Sign Up",
-                style = MaterialTheme.typography.displaySmall.copy(color = Color.White, fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.displaySmall.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold
+                )
             )
         }
 
@@ -97,9 +138,9 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = firstName,
                 placeholder = { Text(text = "First name") },
-                onValueChange = {},
+                onValueChange = { firstName = it },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -123,9 +164,9 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = lastName,
                 placeholder = { Text(text = "Last name") },
-                onValueChange = {},
+                onValueChange = { lastName = it },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -149,9 +190,9 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = email,
                 placeholder = { Text(text = "example@gmail.com") },
-                onValueChange = {},
+                onValueChange = { email = it },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -174,9 +215,18 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
-                placeholder = { Text(text = "********") },
-                onValueChange = {},
+                value = password,
+                onValueChange = { password = it },
+                placeholder = { Text(text = "password") },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Icon(
+                            imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -223,7 +273,11 @@ fun SignUpScreen(navController: NavController) {
                 colors = ButtonDefaults.buttonColors(Color.Black),
                 elevation = ButtonDefaults.elevatedButtonElevation(12.dp),
                 onClick = {
-                    navController.navigate(Route.LoginScreen.route)
+                    viewModel.createNewUser(
+                        user =
+                            User(firstName = firstName, lastName = lastName, email = email),
+                        password = password
+                    )
                 }) {
                 Text("Sign Up", modifier = Modifier.padding(4.dp))
             }

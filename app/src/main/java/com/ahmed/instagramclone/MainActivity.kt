@@ -10,7 +10,9 @@ import androidx.compose.ui.Modifier
 import com.ahmed.instagramclone.presentation.navgraph.NavGraph
 import com.ahmed.instagramclone.presentation.navgraph.Route
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
