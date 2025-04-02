@@ -2,12 +2,9 @@ package com.ahmed.instagramclone.repository
 
 import android.util.Log
 import com.ahmed.instagramclone.Constants.USER_COLLECTION
-import com.ahmed.instagramclone.RegisterValidation
 import com.ahmed.instagramclone.Resource
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
-import com.ahmed.instagramclone.validateEmail
-import com.ahmed.instagramclone.validatePassword
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.flow
@@ -19,18 +16,7 @@ class AppRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
 ) : AppRepository {
 
-//    private val _validation = Channel<RegisterFieldsState>()
-//    val  validation = _validation.receiveAsFlow()
-
     override fun createNewUser(user: User, password: String) = flow {
-
-
-        if (!checkValidation(user = user, password = password)){
-            Log.v("TAGYTOOL","!checkValidation")
-
-            return@flow
-        }
-
         try {
             emit(Resource.Loading())
 
@@ -60,15 +46,5 @@ class AppRepositoryImpl @Inject constructor(
 //                // Error ><><<><<><
 //            }
 
-    }
-
-    private fun checkValidation(user: User, password: String): Boolean {
-        val emailValidation = validateEmail(user.email)
-        val passwordValidation = validatePassword(password)
-
-        val shouldRegister = emailValidation is RegisterValidation.Success
-                && passwordValidation is RegisterValidation.Success
-
-        return shouldRegister
     }
 }

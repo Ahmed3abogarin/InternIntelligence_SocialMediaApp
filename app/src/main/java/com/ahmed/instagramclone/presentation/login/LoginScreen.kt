@@ -1,7 +1,8 @@
-package com.ahmed.instagramclone.presentation.loginregister
+package com.ahmed.instagramclone.presentation.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,12 +35,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.presentation.navgraph.Route
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen( navigateToRegister: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.p2),
@@ -174,7 +173,7 @@ fun LoginScreen(navController: NavController) {
                     colors = ButtonDefaults.buttonColors(Color.White),
                     onClick = {}, shape = RoundedCornerShape(8.dp)
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_google),modifier = Modifier.padding(end = 12.dp), contentDescription = "")
+                    Image(painter = painterResource(R.drawable.ic_google),modifier = Modifier.padding(end = 8.dp), contentDescription = "")
                     Text("Google", color = Color.Black)
                 }
 
@@ -182,10 +181,10 @@ fun LoginScreen(navController: NavController) {
                     modifier = Modifier.weight(1f),
                     elevation = ButtonDefaults.elevatedButtonElevation(8.dp),
                     colors = ButtonDefaults.buttonColors(Color.White),
-                    onClick = {navController.navigate(Route.SignUpScreen.route)},
+                    onClick = {},
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_facebook), modifier = Modifier.padding(end = 12.dp), contentDescription = "")
+                    Image(painter = painterResource(R.drawable.ic_facebook), modifier = Modifier.padding(end = 8.dp), contentDescription = "")
                     Text("Facebook",color = Color.Black)
                 }
 
@@ -201,6 +200,7 @@ fun LoginScreen(navController: NavController) {
             Text(text = "Don't have any account?")
             Spacer(modifier = Modifier.width(4.dp))
             Text(
+                modifier = Modifier.clickable { navigateToRegister() },
                 text = "Sign Up",
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium

@@ -1,8 +1,9 @@
-package com.ahmed.instagramclone.presentation.loginregister
+package com.ahmed.instagramclone.presentation.register
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,39 +48,50 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.Resource
 import com.ahmed.instagramclone.domain.model.User
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel: RegisterViewModel = hiltViewModel()
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
-   val state =  viewModel.state.value
-    when(state){
+    val state = viewModel.state.value
+    val fieldState = viewModel.registerState.value
+
+    if (fieldState.passwordState != null || fieldState.emailState != null) {
+        Toast.makeText(context, "Check your inputs", Toast.LENGTH_SHORT).show()
+    }
+    when (state) {
         is Resource.Loading -> {
-            Toast.makeText(context,"Loading",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
         }
-        is Resource.Success ->{
-            Toast.makeText(context,"User created",Toast.LENGTH_SHORT).show()
+
+        is Resource.Success -> {
+            Toast.makeText(context, "User created", Toast.LENGTH_SHORT).show()
+            navigateToMain()
         }
+
         is Resource.Error -> {
-            Toast.makeText(context,"Error",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
         }
+
         else -> Unit
     }
 
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+    ) {
         Image(
             painter = painterResource(R.drawable.p2),
             contentDescription = "",
@@ -91,17 +102,21 @@ fun SignUpScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(start = 16.dp, top = 34.dp)
+                .padding(start = 16.dp, top = 4.dp)
         ) {
-            Icon(
+            IconButton(
+                onClick = { navigateUp() },
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .size(34.dp),
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = null,
-                tint = Color.White
-            )
+                    .size(34.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+
 
             Text(
                 modifier = Modifier.align(Alignment.Center),
@@ -249,9 +264,9 @@ fun SignUpScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = confirmPassword,
                 placeholder = { Text(text = "********") },
-                onValueChange = {},
+                onValueChange = { confirmPassword = it },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -276,7 +291,9 @@ fun SignUpScreen(navController: NavController) {
                     viewModel.createNewUser(
                         user =
                             User(firstName = firstName, lastName = lastName, email = email),
-                        password = password
+                        password = password,
+                        confirmPassword = confirmPassword
+
                     )
                 }) {
                 Text("Sign Up", modifier = Modifier.padding(4.dp))
@@ -292,6 +309,7 @@ fun SignUpScreen(navController: NavController) {
             Text(text = "Already have any account?")
             Spacer(modifier = Modifier.width(4.dp))
             Text(
+                modifier = Modifier.clickable { navigateUp()  },
                 text = "Sign In",
                 color = Color.Black,
                 style = MaterialTheme.typography.titleMedium
