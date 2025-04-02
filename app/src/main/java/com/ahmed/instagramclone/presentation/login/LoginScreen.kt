@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,20 +26,47 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.Resource
 
 @Composable
-fun LoginScreen( navigateToRegister: () -> Unit) {
+fun LoginScreen(state: Resource<Unit>?,navigateToRegister: () -> Unit, event: (LoginEvent) -> Unit,navigateToMain: () -> Unit) {
+    val context = LocalContext.current
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    when (state) {
+        is Resource.Loading -> {
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+        }
+
+        is Resource.Success -> {
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            navigateToMain()
+        }
+
+        is Resource.Error -> {
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+        }
+
+        else -> Unit
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.p2),
@@ -87,9 +115,9 @@ fun LoginScreen( navigateToRegister: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = email,
                 placeholder = { Text(text = "example@gmail.com") },
-                onValueChange = {},
+                onValueChange = { email = it.trim() },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -113,9 +141,9 @@ fun LoginScreen( navigateToRegister: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
-                value = "",
+                value = password,
                 placeholder = { Text(text = "***********") },
-                onValueChange = {},
+                onValueChange = { password = it.trim() },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -136,7 +164,9 @@ fun LoginScreen( navigateToRegister: () -> Unit) {
                 ),
                 colors = ButtonDefaults.buttonColors(Color.Black),
                 elevation = ButtonDefaults.elevatedButtonElevation(12.dp),
-                onClick = {}) {
+                onClick = {
+                    event(LoginEvent.Login(email = email, password = password))
+                }) {
                 Text("Login", modifier = Modifier.padding(4.dp))
             }
             Spacer(modifier = Modifier.height(25.dp))
@@ -173,7 +203,11 @@ fun LoginScreen( navigateToRegister: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(Color.White),
                     onClick = {}, shape = RoundedCornerShape(8.dp)
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_google),modifier = Modifier.padding(end = 8.dp), contentDescription = "")
+                    Image(
+                        painter = painterResource(R.drawable.ic_google),
+                        modifier = Modifier.padding(end = 8.dp),
+                        contentDescription = ""
+                    )
                     Text("Google", color = Color.Black)
                 }
 
@@ -184,8 +218,12 @@ fun LoginScreen( navigateToRegister: () -> Unit) {
                     onClick = {},
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Image(painter = painterResource(R.drawable.ic_facebook), modifier = Modifier.padding(end = 8.dp), contentDescription = "")
-                    Text("Facebook",color = Color.Black)
+                    Image(
+                        painter = painterResource(R.drawable.ic_facebook),
+                        modifier = Modifier.padding(end = 8.dp),
+                        contentDescription = ""
+                    )
+                    Text("Facebook", color = Color.Black)
                 }
 
             }

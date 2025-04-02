@@ -19,7 +19,6 @@ class AppRepositoryImpl @Inject constructor(
     override fun createNewUser(user: User, password: String) = flow {
         try {
             emit(Resource.Loading())
-
             val authResult = auth.createUserWithEmailAndPassword(user.email, password).await()
             authResult.user?.let {
                 saveUserInfo(it.uid, user)
@@ -27,11 +26,23 @@ class AppRepositoryImpl @Inject constructor(
             } ?: emit(Resource.Error("User creation failed"))
 
         } catch (e: Exception) {
-            Log.v("TAGYTOOL",e.message.toString())
+            Log.v("TAGYTOOL", e.message.toString())
 
             emit(Resource.Error(e.message ?: "Unknown error"))
         }
 
+
+    }
+
+    override fun signIn(email: String, password: String) = flow {
+        try {
+            emit(Resource.Loading())
+            auth.signInWithEmailAndPassword(email, password)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            Log.v("TAGYTOOL", e.message.toString())
+            emit(Resource.Error(e.message.toString()))
+        }
 
     }
 

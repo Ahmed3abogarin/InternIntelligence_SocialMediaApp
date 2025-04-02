@@ -3,6 +3,7 @@ package com.ahmed.instagramclone.di
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.domain.usecases.CreateNewUser
+import com.ahmed.instagramclone.domain.usecases.SignIn
 import com.ahmed.instagramclone.repository.AppRepositoryImpl
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -37,6 +38,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAppUseCases(appRepository: AppRepository) = AppUseCases(
-        createNewUser = CreateNewUser(appRepository)
+        createNewUser = CreateNewUser(appRepository),
+        signIn = SignIn(appRepository)
     )
 }

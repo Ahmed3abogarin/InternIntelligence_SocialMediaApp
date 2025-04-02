@@ -71,16 +71,16 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
     }
     when (state) {
         is Resource.Loading -> {
-            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
         }
 
         is Resource.Success -> {
-            Toast.makeText(context, "User created", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
             navigateToMain()
         }
 
         is Resource.Error -> {
-            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
         }
 
         else -> Unit
@@ -90,7 +90,6 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
     ) {
         Image(
             painter = painterResource(R.drawable.p2),
@@ -102,6 +101,7 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(start = 16.dp, top = 4.dp)
         ) {
             IconButton(
@@ -155,7 +155,7 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
                 value = firstName,
                 placeholder = { Text(text = "First name") },
-                onValueChange = { firstName = it },
+                onValueChange = { firstName = it.trim() },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
