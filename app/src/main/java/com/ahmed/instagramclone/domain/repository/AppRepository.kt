@@ -15,4 +15,6 @@ interface AppRepository {
      fun getUser(userId: String): Flow<Resource<User?>>
 
      fun getPosts(): Flow<Resource<List<PostWithAuthor>>>
+
+     fun uploadPost(id: String, description: String,byteArray: ByteArray): Flow<Resource<Unit>>
 }

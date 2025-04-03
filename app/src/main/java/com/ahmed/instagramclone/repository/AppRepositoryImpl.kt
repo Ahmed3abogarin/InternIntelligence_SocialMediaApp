@@ -9,18 +9,20 @@ import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
 import com.ahmed.instagramclone.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.Flow
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage,
 ) : AppRepository {
 
     override fun createNewUser(user: User, password: String) = flow {
@@ -108,6 +110,35 @@ class AppRepositoryImpl @Inject constructor(
         Log.v("GETPOSTSTOOL", e.message.toString())
         emit(Resource.Error(e.message.toString()))
     }
+
+    override fun uploadPost(id: String, description: String, byteArray: ByteArray) = flow {
+        val postsStorage = storage.reference.child("posts/images/$id")
+        val result = postsStorage.putBytes(byteArray).await()
+        val downloadUrl = result.storage.downloadUrl.await().toString()
+
+
+        try {
+            emit(Resource.Loading())
+
+            val post = Post(
+                id = UUID.randomUUID().toString(),
+                authorId = auth.currentUser!!.uid,
+                image = downloadUrl,
+                description = description,
+            )
+
+
+            db.collection("posts").add(post)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message.toString()))
+            Log.v("UPLOADPOST", e.message.toString())
+
+        }
+
+
+    }
+
 
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)

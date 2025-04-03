@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.appnav
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,9 +26,11 @@ import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigati
 import com.ahmed.instagramclone.presentation.home.HomeScreen
 import com.ahmed.instagramclone.presentation.home.HomeViewModel
 import com.ahmed.instagramclone.presentation.navgraph.Route
-import com.ahmed.instagramclone.presentation.new_post.NewPost
+import com.ahmed.instagramclone.presentation.new_post.NewPostScreen
+import com.ahmed.instagramclone.presentation.new_post.NewViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.profile.ProfileScreen
+import com.ahmed.instagramclone.presentation.profile.ProfileViewModel
 import com.ahmed.instagramclone.presentation.reels.ReelsScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
 
@@ -45,6 +48,8 @@ fun AppNavigatorScreen() {
 
     val searchViewmodel: SearchViewModel = hiltViewModel()
     val homeViewmodel: HomeViewModel = hiltViewModel()
+    val newViewmodel: NewViewModel = hiltViewModel()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
 
 
 
@@ -115,13 +120,14 @@ fun AppNavigatorScreen() {
                 SearchScreen(searchViewmodel.state.value, event = searchViewmodel::onEvent)
             }
             composable(Route.NewScreen.route) {
-                NewPost()
+                NewPostScreen(state = newViewmodel.state.value, event = newViewmodel::onEvent)
             }
             composable(Route.ReelsScreen.route) {
                 ReelsScreen()
             }
             composable(Route.ProfileScreen.route) {
-                ProfileScreen()
+
+                ProfileScreen(profileViewModel.state.value!!)
             }
 
         }

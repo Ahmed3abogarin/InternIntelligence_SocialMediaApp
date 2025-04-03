@@ -6,8 +6,8 @@ data class User(
     val email: String = "",
     val bio: String = "",
     val imagePath: String = "",
-    val followers: List<String> = listOf(),
-    val following: List<String> = listOf(),
+    val followers: Int = 0,
+    val following: Int = 0,
 //    val chatList: List<ChatData> = listOf()
 )
 

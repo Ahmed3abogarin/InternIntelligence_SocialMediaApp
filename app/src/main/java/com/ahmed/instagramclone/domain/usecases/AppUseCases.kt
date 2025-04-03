@@ -4,5 +4,7 @@ data class AppUseCases(
     val createNewUser: CreateNewUser,
     val signIn: SignIn,
     val searchUser: SearchUser,
-    val getPosts: GetPosts
+    val getPosts: GetPosts,
+    val uploadPost: UploadPost,
+    val getUser: GetUser
 )

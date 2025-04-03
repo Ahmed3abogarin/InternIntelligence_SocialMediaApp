@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.profile
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,19 +41,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmed.instagramclone.ProfileTabs
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(state: Resource<User?>) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { ProfileTabs.entries.size })
     val selectedTabIndex = remember {
@@ -112,19 +114,29 @@ fun ProfileScreen() {
                     Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "35",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                    state.data?.followers?.let {
+                        Log.v("USERINMANIN",state.data.firstName)
+                        Text(
+                            text = state.data.followers.toString(),
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+
                     Text(text = "followers", style = MaterialTheme.typography.titleMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "90",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
+                            state.data?.following?.let {
+                                Text(
+                                    text = state.data.following.toString(),
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                            }
+
+
+
+
                     Text(text = "following", style = MaterialTheme.typography.titleMedium)
                 }
             }
@@ -228,11 +240,3 @@ fun ProfileScreen() {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun SettingsPreview() {
-    InstagramCloneTheme {
-        ProfileScreen()
-    }
-}

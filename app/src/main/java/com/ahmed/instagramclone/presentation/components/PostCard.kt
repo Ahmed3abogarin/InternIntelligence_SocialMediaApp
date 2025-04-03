@@ -91,7 +91,7 @@ fun PostCard(post: PostWithAuthor) {
                 Text(text = post.post.likes.size.toString())
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(29.dp),
                     painter = painterResource(R.drawable.ic_comment),
                     contentDescription = null
                 )
