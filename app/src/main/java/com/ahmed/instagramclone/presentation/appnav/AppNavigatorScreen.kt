@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.home.HomeScreen
+import com.ahmed.instagramclone.presentation.home.HomeViewModel
 import com.ahmed.instagramclone.presentation.navgraph.Route
 import com.ahmed.instagramclone.presentation.new_post.NewPost
 import com.ahmed.instagramclone.presentation.search.SearchScreen
@@ -43,6 +44,7 @@ fun AppNavigatorScreen() {
     }
 
     val searchViewmodel: SearchViewModel = hiltViewModel()
+    val homeViewmodel: HomeViewModel = hiltViewModel()
 
 
 
@@ -107,7 +109,7 @@ fun AppNavigatorScreen() {
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(Route.HomeScreen.route) {
-                HomeScreen()
+                HomeScreen(homeViewmodel.state.value)
             }
             composable(Route.SearchScreen.route) {
                 SearchScreen(searchViewmodel.state.value, event = searchViewmodel::onEvent)

@@ -14,11 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val appUseCases: AppUseCases,
+
 ) : ViewModel() {
     private var searchQuery = ""
 
     private val _state = mutableStateOf<Resource<List<User>>?>(null)
     val state: State<Resource<List<User>>?> = _state
+
 
 
     fun onEvent(event: SearchEvent) {
@@ -35,6 +37,7 @@ class SearchViewModel @Inject constructor(
 
     private fun searchUsers() {
         viewModelScope.launch {
+
             if (searchQuery.isNotEmpty()){
                 appUseCases.searchUser(searchQuery).collect{
                     _state.value = it

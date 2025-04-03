@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.home
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,29 +13,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.presentation.components.PostCard
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.presentation.components.PostsList
 import com.ahmed.instagramclone.presentation.components.StoryList
-import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(state: Resource<List<PostWithAuthor>>?) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
-            .verticalScroll(scrollState)
     ) {
         Row(
             modifier = Modifier
@@ -71,15 +72,25 @@ fun HomeScreen() {
 
         StoryList()
         Spacer(modifier = Modifier.height(12.dp))
-        PostCard()
+        when (state) {
+            is Resource.Loading -> {
+                Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+            }
 
-    }
-}
+            is Resource.Success -> {
+                state.data?.let {
+                    PostsList(state.data)
+                }
 
-@Preview(showBackground = true)
-@Composable
-fun HomePreview() {
-    InstagramCloneTheme {
-        HomeScreen()
+            }
+
+            is Resource.Error -> {
+                Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+
+
     }
 }

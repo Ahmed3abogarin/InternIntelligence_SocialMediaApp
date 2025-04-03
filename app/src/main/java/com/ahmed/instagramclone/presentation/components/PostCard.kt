@@ -1,6 +1,5 @@
 package com.ahmed.instagramclone.presentation.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -25,13 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
 
 @Composable
-fun PostCard() {
+fun PostCard(post: PostWithAuthor) {
+    val context = LocalContext.current
     Column {
         Row(
             modifier = Modifier
@@ -50,21 +56,22 @@ fun PostCard() {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
-                    Text(text = "Account name", fontSize = 13.sp)
-                    Text(text = "Sponsored", fontSize = 11.sp)
+                    Text(text = post.author.firstName +" "+ post.author.lastName  , fontSize = 13.sp)
+                    Text(text = post.author.bio, fontSize = 11.sp)
                 }
             }
 
 
             Icon(Icons.Default.MoreVert, contentDescription = null)
         }
-        Image(
+
+        AsyncImage(
+            model = ImageRequest.Builder(context).data(post.post.image).build(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(410.dp)
                 .padding(top = 8.dp),
-            contentScale = ContentScale.Crop,
-            painter = painterResource(R.drawable.ic_launcher_background),
+            contentScale = ContentScale.FillBounds,
             contentDescription = null
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -81,10 +88,10 @@ fun PostCard() {
                     imageVector = Icons.Default.FavoriteBorder,
                     contentDescription = null
                 )
-                Text(text = "4,567")
+                Text(text = post.post.likes.size.toString())
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    modifier = Modifier.size(34.dp),
+                    modifier = Modifier.size(32.dp),
                     painter = painterResource(R.drawable.ic_comment),
                     contentDescription = null
                 )
@@ -94,7 +101,7 @@ fun PostCard() {
                     painter = painterResource(R.drawable.ic_send),
                     contentDescription = "app logo"
                 )
-                Text(text = "121")
+                Text(text = "24")
             }
 
 
@@ -106,5 +113,18 @@ fun PostCard() {
             )
 
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(modifier = Modifier.padding(horizontal = 10.dp), text = post.post.description, fontSize = 13.sp)
+    }
+}
+
+
+@Composable
+fun PostsList(posts: List<PostWithAuthor>){
+    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        items(posts){
+            PostCard(it)
+        }
+
     }
 }
