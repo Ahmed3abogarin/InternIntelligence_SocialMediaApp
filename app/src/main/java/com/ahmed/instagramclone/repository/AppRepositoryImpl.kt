@@ -1,8 +1,8 @@
 package com.ahmed.instagramclone.repository
 
 import android.util.Log
-import com.ahmed.instagramclone.Constants.USER_COLLECTION
-import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
+import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +44,25 @@ class AppRepositoryImpl @Inject constructor(
             emit(Resource.Error(e.message.toString()))
         }
 
+    }
+
+    override fun searchUser(searchQuery: String) = flow {
+        try {
+            emit(Resource.Loading())
+
+            val querySnapshot = db.collection("Instagram_user")
+                .whereGreaterThanOrEqualTo("firstName", searchQuery)
+                .whereLessThanOrEqualTo("firstName", searchQuery + "\uf8ff")
+                .get()
+                .await()
+
+            val users = querySnapshot.toObjects(User::class.java)
+            emit(Resource.Success(users))
+
+        } catch (e: Exception){
+            Log.v("TAGYTOOL", e.message.toString())
+            emit(Resource.Error(e.message.toString()))
+        }
     }
 
     private fun saveUserInfo(uid: String, user: User) {

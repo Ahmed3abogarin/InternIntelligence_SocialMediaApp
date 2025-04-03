@@ -1,4 +1,4 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.presentation.mainactivity
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

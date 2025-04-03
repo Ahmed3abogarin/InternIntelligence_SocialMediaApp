@@ -1,4 +1,4 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.presentation.mainactivity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -42,26 +42,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun LoginScreen(state: Resource<Unit>?,navigateToRegister: () -> Unit, event: (LoginEvent) -> Unit,navigateToMain: () -> Unit) {
+fun LoginScreen(state: Resource<Unit>?, navigateToRegister: () -> Unit, event: (LoginEvent) -> Unit, navigateToMain: () -> Unit) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     when (state) {
         is Resource.Loading -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
         }
 
         is Resource.Success -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "You passes", Toast.LENGTH_SHORT).show()
             navigateToMain()
         }
 
         is Resource.Error -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
         }
 
         else -> Unit

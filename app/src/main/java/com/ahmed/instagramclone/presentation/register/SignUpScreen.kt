@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 
 @Composable
@@ -71,16 +71,16 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
     }
     when (state) {
         is Resource.Loading -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
         }
 
         is Resource.Success -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "You passes", Toast.LENGTH_SHORT).show()
             navigateToMain()
         }
 
         is Resource.Error -> {
-            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
         }
 
         else -> Unit

@@ -1,8 +1,8 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.util
 
 sealed class RegisterValidation {
     data object Success : RegisterValidation()
-    data class Failed(val message:String):RegisterValidation()
+    data class Failed(val message:String): RegisterValidation()
 }
 data class RegisterFieldsState(
     val email : RegisterValidation,

@@ -4,9 +4,11 @@ sealed class Route(val route: String) {
     data object LoginScreen: Route(route = "loginScreen")
     data object SignUpScreen: Route(route = "signUpScreen")
 
-    data object HomeScreen: Route(route = "signUpScreen")
+    data object HomeScreen: Route(route = "homeScreen")
     data object SearchScreen: Route(route = "searchScreen")
-    data object SettingsScreen: Route(route = "settingsScreen")
+    data object NewScreen: Route(route = "newScreen")
+    data object ReelsScreen: Route(route = "reelsScreen")
+    data object ProfileScreen: Route(route = "profileScreen")
 
     data object AppStartNavigation: Route(route = "appLoginScreen")
     data object AppMainNavigation: Route(route = "appMainScreen")

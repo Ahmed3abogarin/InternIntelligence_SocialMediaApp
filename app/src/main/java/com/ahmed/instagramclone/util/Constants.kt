@@ -1,4 +1,4 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.util
 
 object Constants {
 

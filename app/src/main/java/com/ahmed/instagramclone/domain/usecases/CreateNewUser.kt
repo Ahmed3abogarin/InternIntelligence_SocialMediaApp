@@ -1,6 +1,6 @@
 package com.ahmed.instagramclone.domain.usecases
 
-import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import kotlinx.coroutines.flow.Flow

@@ -1,10 +1,10 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.util
 
 import android.util.Patterns
 
 // Make file so we can use it in many fragments
 
-fun validateEmail(email:String): RegisterValidation{
+fun validateEmail(email:String): RegisterValidation {
     if(email.isEmpty())
         return RegisterValidation.Failed("Email cannot be empty")
     if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
@@ -14,7 +14,7 @@ fun validateEmail(email:String): RegisterValidation{
 }
 
 
-fun validatePassword(password:String):RegisterValidation{
+fun validatePassword(password:String): RegisterValidation {
      if (password.isEmpty())
          return RegisterValidation.Failed("Password cannot be empty")
 

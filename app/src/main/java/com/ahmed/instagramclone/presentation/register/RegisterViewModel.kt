@@ -4,13 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmed.instagramclone.RegisterFieldsState
-import com.ahmed.instagramclone.RegisterValidation
-import com.ahmed.instagramclone.Resource
+import com.ahmed.instagramclone.util.RegisterFieldsState
+import com.ahmed.instagramclone.util.RegisterValidation
+import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
-import com.ahmed.instagramclone.validateEmail
-import com.ahmed.instagramclone.validatePassword
+import com.ahmed.instagramclone.util.validateEmail
+import com.ahmed.instagramclone.util.validatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,7 +39,8 @@ class RegisterViewModel @Inject constructor(
                 }
             }else{
                 val registerValidState = RegisterFieldsState(
-                    validateEmail(user.email),validatePassword(password))
+                    validateEmail(user.email), validatePassword(password)
+                )
                 if (registerValidState.email is RegisterValidation.Failed){
                     _registerState.value = _registerState.value.copy(emailState =registerValidState.email.message)
                 }
