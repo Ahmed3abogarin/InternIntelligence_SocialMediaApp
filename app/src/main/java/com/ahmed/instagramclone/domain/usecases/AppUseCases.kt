@@ -6,5 +6,6 @@ data class AppUseCases(
     val searchUser: SearchUser,
     val getPosts: GetPosts,
     val uploadPost: UploadPost,
-    val getUser: GetUser
+    val getUser: GetUser,
+    val getReels: GetReels
 )

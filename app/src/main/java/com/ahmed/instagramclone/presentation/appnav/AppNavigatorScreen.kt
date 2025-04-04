@@ -1,6 +1,5 @@
 package com.ahmed.instagramclone.presentation.appnav
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,6 +31,7 @@ import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.profile.ProfileScreen
 import com.ahmed.instagramclone.presentation.profile.ProfileViewModel
 import com.ahmed.instagramclone.presentation.reels.ReelsScreen
+import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
 
 @Composable
@@ -50,6 +50,7 @@ fun AppNavigatorScreen() {
     val homeViewmodel: HomeViewModel = hiltViewModel()
     val newViewmodel: NewViewModel = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
+    val reelsViewModel: ReelsViewModel = hiltViewModel()
 
 
 
@@ -123,7 +124,7 @@ fun AppNavigatorScreen() {
                 NewPostScreen(state = newViewmodel.state.value, event = newViewmodel::onEvent)
             }
             composable(Route.ReelsScreen.route) {
-                ReelsScreen()
+                ReelsScreen(reelsViewModel.state.value)
             }
             composable(Route.ProfileScreen.route) {
 

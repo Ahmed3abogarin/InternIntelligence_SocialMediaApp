@@ -1,6 +1,7 @@
 package com.ahmed.instagramclone.domain.repository
 
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.Reel
 import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,8 @@ interface AppRepository {
      fun getUser(userId: String): Flow<Resource<User?>>
 
      fun getPosts(): Flow<Resource<List<PostWithAuthor>>>
+
+     fun getReels(): Flow<Resource<List<Reel>>>
 
      fun uploadPost(id: String, description: String,byteArray: ByteArray): Flow<Resource<Unit>>
 }

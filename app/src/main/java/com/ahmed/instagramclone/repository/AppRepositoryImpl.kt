@@ -3,6 +3,7 @@ package com.ahmed.instagramclone.repository
 import android.util.Log
 import com.ahmed.instagramclone.domain.model.Post
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.Reel
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
@@ -106,6 +107,21 @@ class AppRepositoryImpl @Inject constructor(
         }
 
         emit(Resource.Success(postsWithAuthors))
+    }.catch { e ->
+        Log.v("GETPOSTSTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
+
+    override fun getReels() = flow {
+        Log.v("GETPOSTSTOOL", "Get reels is called")
+
+        emit(Resource.Loading())
+
+        val snapshot = db.collection("reels").get().await()
+        val reels = snapshot.toObjects(Reel::class.java)
+
+
+        emit(Resource.Success(reels))
     }.catch { e ->
         Log.v("GETPOSTSTOOL", e.message.toString())
         emit(Resource.Error(e.message.toString()))
