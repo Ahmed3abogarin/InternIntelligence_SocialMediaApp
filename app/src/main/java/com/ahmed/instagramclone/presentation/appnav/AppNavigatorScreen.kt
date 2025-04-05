@@ -22,16 +22,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
+import com.ahmed.instagramclone.presentation.explore.ExploreScreen
+import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
 import com.ahmed.instagramclone.presentation.home.HomeScreen
 import com.ahmed.instagramclone.presentation.home.HomeViewModel
 import com.ahmed.instagramclone.presentation.navgraph.Route
 import com.ahmed.instagramclone.presentation.new_post.NewPostScreen
 import com.ahmed.instagramclone.presentation.new_post.NewViewModel
-import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.profile.ProfileScreen
 import com.ahmed.instagramclone.presentation.profile.ProfileViewModel
 import com.ahmed.instagramclone.presentation.reels.ReelsScreen
 import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
+import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
 
 @Composable
@@ -51,7 +53,7 @@ fun AppNavigatorScreen() {
     val newViewmodel: NewViewModel = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val reelsViewModel: ReelsViewModel = hiltViewModel()
-
+    val exploreViewModel: ExploreViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -63,11 +65,11 @@ fun AppNavigatorScreen() {
     selectedItem = remember(key1 = backStackState) {
         when (backStackState?.destination?.route) {
             Route.HomeScreen.route -> 0
-            Route.SearchScreen.route -> 1
+            Route.ExploreScreen.route -> 1
             Route.NewScreen.route -> 2
             Route.ReelsScreen.route -> 3
             Route.ProfileScreen.route -> 4
-            else -> 0
+            else -> selectedItem
         }
     }
 
@@ -86,7 +88,7 @@ fun AppNavigatorScreen() {
 
                         1 -> navigateToTab(
                             navController = navController,
-                            route = Route.SearchScreen.route
+                            route = Route.ExploreScreen.route
                         )
 
                         2 -> navigateToTab(
@@ -117,8 +119,16 @@ fun AppNavigatorScreen() {
             composable(Route.HomeScreen.route) {
                 HomeScreen(homeViewmodel.state.value)
             }
+            composable(Route.ExploreScreen.route) {
+                ExploreScreen(
+                    state = exploreViewModel.state.value,
+                    navigateToSearch = { navController.navigate(Route.SearchScreen.route)})
+            }
             composable(Route.SearchScreen.route) {
-                SearchScreen(searchViewmodel.state.value, event = searchViewmodel::onEvent)
+                SearchScreen(
+                    searchViewmodel.state.value,
+                    event = searchViewmodel::onEvent,
+                    navigateToUp = { navController.navigateUp() })
             }
             composable(Route.NewScreen.route) {
                 NewPostScreen(state = newViewmodel.state.value, event = newViewmodel::onEvent)
@@ -127,15 +137,10 @@ fun AppNavigatorScreen() {
                 ReelsScreen(reelsViewModel.state.value)
             }
             composable(Route.ProfileScreen.route) {
-
                 ProfileScreen(profileViewModel.state.value!!)
             }
-
         }
-
     }
-
-
 }
 
 private fun navigateToTab(navController: NavController, route: String) {
@@ -150,7 +155,6 @@ private fun navigateToTab(navController: NavController, route: String) {
                 true // if you clicked multiple time on home screen icon that won't create a new instance of home screen each time
         }
 
-
     }
 }
 
@@ -159,4 +163,4 @@ data class BottomNavigationItem(
     val color: Color,
     val size: IntSize = IntSize(0, 0),
     val offset: Offset = Offset(0f, 0f),
-    )
+)

@@ -5,6 +5,7 @@ sealed class Route(val route: String) {
     data object SignUpScreen: Route(route = "signUpScreen")
 
     data object HomeScreen: Route(route = "homeScreen")
+    data object ExploreScreen: Route(route = "exploreScreen")
     data object SearchScreen: Route(route = "searchScreen")
     data object NewScreen: Route(route = "newScreen")
     data object ReelsScreen: Route(route = "reelsScreen")
