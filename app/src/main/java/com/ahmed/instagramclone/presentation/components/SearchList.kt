@@ -51,7 +51,7 @@ fun SearchList(users: List<User>, navigateToUser: (User) -> Unit) {
 
 
 @Composable
-fun SearchCard(user: User, navigateToUser: () -> Unit) {
+fun SearchCard(user: User, textColor: Color = Color.Black, navigateToUser: () -> Unit) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -77,7 +77,7 @@ fun SearchCard(user: User, navigateToUser: () -> Unit) {
 
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text(text = user.firstName + "" + user.lastName, fontWeight = FontWeight.SemiBold)
+                Text(text = user.firstName + "" + user.lastName, fontWeight = FontWeight.SemiBold, color = textColor)
                 Text(
                     text = user.firstName + "" + user.lastName,
                     fontSize = 13.sp,

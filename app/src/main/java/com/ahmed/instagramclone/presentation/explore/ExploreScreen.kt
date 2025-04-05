@@ -36,6 +36,7 @@ fun ExploreScreen(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
+            .padding(top = 6.dp)
             .background(Color.White),
     )
     {

@@ -123,6 +123,37 @@ fun PostCard(post: PostWithAuthor) {
 fun PostsList(posts: List<PostWithAuthor>){
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.app_logo),
+                    contentDescription = "app logo",
+                    modifier = Modifier.width(160.dp)
+                )
+
+                Row {
+                    Icon(
+                        modifier = Modifier.size(34.dp),
+                        imageVector = Icons.Default.FavoriteBorder,
+                        contentDescription = "app logo"
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(R.drawable.ic_send),
+                        contentDescription = "app logo"
+                    )
+                }
+
+
+            }
+            Spacer(modifier = Modifier.height(12.dp))
             StoryList()
             Spacer(modifier = Modifier.height(12.dp))
         }
