@@ -17,3 +17,7 @@ data class PostWithAuthor(
     val post: Post,
     val author: User
 )
+data class ReelWithAuthor(
+    val post: Reel,
+    val author: User
+)

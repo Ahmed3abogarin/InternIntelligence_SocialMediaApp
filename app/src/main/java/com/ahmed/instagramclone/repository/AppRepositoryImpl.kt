@@ -4,6 +4,7 @@ import android.util.Log
 import com.ahmed.instagramclone.domain.model.Post
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.Reel
+import com.ahmed.instagramclone.domain.model.ReelWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
@@ -17,7 +18,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
@@ -113,15 +113,22 @@ class AppRepositoryImpl @Inject constructor(
     }
 
     override fun getReels() = flow {
-        Log.v("GETPOSTSTOOL", "Get reels is called")
-
         emit(Resource.Loading())
-
         val snapshot = db.collection("reels").get().await()
         val reels = snapshot.toObjects(Reel::class.java)
 
+        val reelsWithAuthors = reels.mapNotNull { reel ->
+            val authorFlow = getUser(reel.authorId)
+                .filterIsInstance<Resource.Success<User>>()
+                .map { it.data }
+                .catch { emit(User()) }
+                .firstOrNull()
 
-        emit(Resource.Success(reels))
+            ReelWithAuthor(post = reel, author = authorFlow ?: User())
+        }
+
+
+        emit(Resource.Success(reelsWithAuthors))
     }.catch { e ->
         Log.v("GETPOSTSTOOL", e.message.toString())
         emit(Resource.Error(e.message.toString()))
@@ -137,7 +144,6 @@ class AppRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
 
             val post = Post(
-                id = UUID.randomUUID().toString(),
                 authorId = auth.currentUser!!.uid,
                 image = downloadUrl,
                 description = description,

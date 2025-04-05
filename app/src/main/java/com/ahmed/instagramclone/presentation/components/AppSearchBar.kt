@@ -5,7 +5,9 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -20,7 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import com.ahmed.instagramclone.ui.theme.SearchGray
 import com.ahmed.instagramclone.util.Dimens.IconSize
 
 @Composable
@@ -48,7 +54,7 @@ fun AppSearchBar(
     Box(modifier = modifier) {
         TextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().height(45.dp),
             value = text,
             readOnly = readOnly,
             onValueChange = onValueChange,
@@ -67,10 +73,10 @@ fun AppSearchBar(
                     color = Color.Gray
                 )
             },
-            shape = MaterialTheme.shapes.medium,
+            shape = RoundedCornerShape(4.dp),
             colors = TextFieldDefaults.colors(
-                disabledContainerColor = Color.LightGray,
-                focusedContainerColor = Color.LightGray,
+                disabledContainerColor = SearchGray,
+                focusedContainerColor = SearchGray,
                 disabledTextColor =  if (isSystemInDarkTheme()) Color.White else Color.Black,
                 cursorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 disabledIndicatorColor = Color.Transparent,
@@ -90,4 +96,17 @@ fun AppSearchBar(
         )
     }
 
+}
+
+
+@Preview
+@Composable
+fun Search2Preview(){
+    InstagramCloneTheme {
+        AppSearchBar(
+            text ="",
+            onValueChange = {},
+            onSearch = {}
+        )
+    }
 }
