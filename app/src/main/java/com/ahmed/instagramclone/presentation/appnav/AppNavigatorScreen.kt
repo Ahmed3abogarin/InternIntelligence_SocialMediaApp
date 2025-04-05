@@ -37,6 +37,7 @@ import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
 import com.ahmed.instagramclone.presentation.user.UserScreen
+import com.ahmed.instagramclone.presentation.user.UserViewModel
 
 @Composable
 fun AppNavigatorScreen() {
@@ -56,6 +57,7 @@ fun AppNavigatorScreen() {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val reelsViewModel: ReelsViewModel = hiltViewModel()
     val exploreViewModel: ExploreViewModel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -148,11 +150,14 @@ fun AppNavigatorScreen() {
             composable(Route.ProfileScreen.route) {
                 ProfileScreen(profileViewModel.state.value!!)
             }
-
             composable(Route.UserScreen.route) {
                 navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
                     ?.let { user ->
-                        UserScreen(user = user, navigateToUp = { navController.navigateUp() })
+                        UserScreen(
+                            user = user,
+                            navigateToUp = { navController.navigateUp() },
+                            event = userViewModel::onEvent
+                        )
                     }
             }
         }

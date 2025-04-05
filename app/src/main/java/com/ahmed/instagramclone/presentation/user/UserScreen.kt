@@ -56,7 +56,7 @@ import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserScreen(user: User, navigateToUp: () -> Unit) {
+fun UserScreen(user: User, navigateToUp: () -> Unit,event: (UserEvent) -> Unit ){
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { ProfileTabs.entries.size })
@@ -121,7 +121,7 @@ fun UserScreen(user: User, navigateToUp: () -> Unit) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                     Text(
-                        text = user.followers.toString(),
+                        text = user.followers.size.toString(),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -131,7 +131,7 @@ fun UserScreen(user: User, navigateToUp: () -> Unit) {
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = user.following.toString(),
+                        text = user.following.size.toString(),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -158,7 +158,7 @@ fun UserScreen(user: User, navigateToUp: () -> Unit) {
         ) {
             Button(
                 modifier = Modifier.weight(1f),
-                onClick = {},
+                onClick = {event(UserEvent.FollowUser(targetUserId = user.userId))},
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(width = 1.dp, color = Color.Black),
                 colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Blue)
@@ -262,7 +262,8 @@ fun UserPreview() {
                 firstName = "Adress",
                 lastName = "Mosa",
                 bio = "Medical student live in USA"
-            )
+            ),
+            event = {}
         )
     }
 }

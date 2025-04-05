@@ -10,6 +10,7 @@ import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
 import com.ahmed.instagramclone.util.Resource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.catch
@@ -159,6 +160,24 @@ class AppRepositoryImpl @Inject constructor(
         }
 
 
+    }
+
+    override fun followUser(currentUserId: String,targetUserId: String) = flow {
+        emit(Resource.Loading())
+        val currentUserRef = db.collection("Instagram_user").document(currentUserId)
+        val targetUserRef = db.collection("Instagram_user").document(targetUserId)
+        db.runBatch { batch ->
+            // add current user to target user followers ( follow person)
+            batch.update(targetUserRef,"followers",FieldValue.arrayUnion(currentUserId))
+
+            // add target user to current following list
+            batch.update(currentUserRef,"following",FieldValue.arrayUnion(targetUserId))
+
+        }
+        emit(Resource.Success(Unit))
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
     }
 
 

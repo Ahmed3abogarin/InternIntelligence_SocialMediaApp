@@ -60,7 +60,6 @@ fun ProfileScreen(state: Resource<User?>) {
     val selectedTabIndex = remember {
         derivedStateOf { pagerState.currentPage }
     }
-    val context = LocalContext.current
 
 
 
@@ -120,7 +119,7 @@ fun ProfileScreen(state: Resource<User?>) {
                     state.data?.followers?.let {
                         Log.v("USERINMANIN",state.data.firstName)
                         Text(
-                            text = state.data.followers.toString(),
+                            text = state.data.followers.size.toString(),
                             fontSize = 26.sp,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -131,7 +130,7 @@ fun ProfileScreen(state: Resource<User?>) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             state.data?.following?.let {
                                 Text(
-                                    text = state.data.following.toString(),
+                                    text = state.data.following.size.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
                                 )

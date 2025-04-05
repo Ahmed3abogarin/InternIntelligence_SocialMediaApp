@@ -5,6 +5,7 @@ import android.content.Context
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.domain.usecases.CreateNewUser
+import com.ahmed.instagramclone.domain.usecases.FollowUser
 import com.ahmed.instagramclone.domain.usecases.GetPosts
 import com.ahmed.instagramclone.domain.usecases.GetReels
 import com.ahmed.instagramclone.domain.usecases.GetUser
@@ -61,6 +62,7 @@ object AppModule {
         getPosts = GetPosts(appRepository),
         uploadPost = UploadPost(appRepository),
         getUser = GetUser(appRepository),
-        getReels = GetReels(appRepository)
+        getReels = GetReels(appRepository),
+        followUser = FollowUser(appRepository)
     )
 }
