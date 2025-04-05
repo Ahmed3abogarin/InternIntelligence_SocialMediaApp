@@ -33,6 +33,7 @@ fun SearchScreen(
     state: Resource<List<User>>?,
     event: (SearchEvent) -> Unit,
     navigateToUp: () -> Unit,
+    navigateToUser: (User) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -74,8 +75,8 @@ fun SearchScreen(
             }
 
             is Resource.Success -> {
-                state.data?.let {
-                    SearchList(it)
+                state.data?.let { usersList ->
+                    SearchList(usersList, navigateToUser = {navigateToUser(it)})
                 }
             }
 

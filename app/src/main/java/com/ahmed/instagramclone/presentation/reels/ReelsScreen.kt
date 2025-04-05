@@ -16,12 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.domain.model.ReelWithAuthor
+import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.components.ReelPlayer
 import com.ahmed.instagramclone.presentation.components.SearchCard
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?) {
+fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -> Unit) {
 
     state?.data?.let {
         val reels = state.data
@@ -39,10 +40,12 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?) {
                 state = pagerState,
             ) {
                 val reel = reels[it]
-                Box{
+                Box {
                     ReelPlayer(reel.post.videoUrl)
-                    Row (modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding()){
-                        SearchCard(reel.author)
+                    Row(modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()) {
+                        SearchCard(reel.author, navigateToUser = { navigateToUser(reel.author) })
                     }
 
                 }

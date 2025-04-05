@@ -1,5 +1,9 @@
 package com.ahmed.instagramclone.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class User(
     val firstName: String = "",
     val lastName: String = "",
@@ -9,5 +13,5 @@ data class User(
     val followers: Int = 0,
     val following: Int = 0,
 //    val chatList: List<ChatData> = listOf()
-)
+): Parcelable
 

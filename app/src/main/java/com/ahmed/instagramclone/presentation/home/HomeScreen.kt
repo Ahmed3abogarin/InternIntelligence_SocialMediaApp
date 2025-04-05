@@ -69,9 +69,6 @@ fun HomeScreen(state: Resource<List<PostWithAuthor>>?) {
         }
         Spacer(modifier = Modifier.height(12.dp))
 
-
-        StoryList()
-        Spacer(modifier = Modifier.height(12.dp))
         when (state) {
             is Resource.Loading -> {
                 Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()

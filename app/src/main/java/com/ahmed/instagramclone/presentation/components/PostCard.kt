@@ -88,20 +88,20 @@ fun PostCard(post: PostWithAuthor) {
                     imageVector = Icons.Default.FavoriteBorder,
                     contentDescription = null
                 )
-                Text(text = post.post.likes.size.toString())
+                Text(text = post.post.likes.size.toString(), fontSize = 12.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    modifier = Modifier.size(29.dp),
+                    modifier = Modifier.size(26.dp),
                     painter = painterResource(R.drawable.ic_comment),
                     contentDescription = null
                 )
-                Text(text = "121")
+                Text(text = "121", fontSize = 12.sp)
                 Icon(
                     modifier = Modifier.size(34.dp),
                     painter = painterResource(R.drawable.ic_send),
                     contentDescription = "app logo"
                 )
-                Text(text = "24")
+                Text(text = "24", fontSize = 12.sp)
             }
 
 
@@ -122,6 +122,10 @@ fun PostCard(post: PostWithAuthor) {
 @Composable
 fun PostsList(posts: List<PostWithAuthor>){
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        item {
+            StoryList()
+            Spacer(modifier = Modifier.height(12.dp))
+        }
         items(posts){
             PostCard(it)
         }

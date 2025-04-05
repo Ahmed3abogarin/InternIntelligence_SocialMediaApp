@@ -1,8 +1,6 @@
-package com.ahmed.instagramclone.presentation.profile
+package com.ahmed.instagramclone.presentation.user
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +20,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PersonAddAlt
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Tab
@@ -41,20 +41,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.ahmed.instagramclone.ProfileTabs
-import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.User
-import com.ahmed.instagramclone.util.Resource
+import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
 import kotlinx.coroutines.launch
 
-
 @Composable
-fun ProfileScreen(state: Resource<User?>) {
+fun UserScreen(user: User, navigateToUp: () -> Unit) {
+
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { ProfileTabs.entries.size })
     val selectedTabIndex = remember {
@@ -63,46 +66,45 @@ fun ProfileScreen(state: Resource<User?>) {
     val context = LocalContext.current
 
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .padding(8.dp)
     ) {
-        Text(
-            text = "Ahmed_Adil",
-            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold)
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         )
-        Spacer(modifier = Modifier.height(18.dp))
-        Row {
-            Box(
-                modifier = Modifier
-                    .size(91.dp)
-            ) {
-
-
-                Image(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(90.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black),
-                    painter = painterResource(R.drawable.ic_launcher_background),
+        {
+            IconButton(onClick = { navigateToUp() }) {
+                Icon(
+                    modifier = Modifier.size(38.dp),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null
                 )
-
-
-
-                Icon(
-                    Icons.Default.AddCircle, contentDescription = "", modifier = Modifier
-                        .align(
-                            Alignment.BottomEnd
-                        )
-                        .clip(CircleShape)
-                        .background(Color.White)
-                )
             }
+
+            Text(
+                text = user.firstName + "" + user.lastName,
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold)
+            )
+
+        }
+
+        Spacer(modifier = Modifier.height(18.dp))
+        Row {
+
+            AsyncImage(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(90.dp)
+                    .clip(CircleShape)
+                    .background(Color.Black),
+                model = ImageRequest.Builder(context).data(context).data(user.imagePath).build(),
+                contentDescription = "user image",
+                contentScale = ContentScale.Crop
+            )
+
             Spacer(modifier = Modifier.width(22.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -117,47 +119,51 @@ fun ProfileScreen(state: Resource<User?>) {
                     Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    state.data?.followers?.let {
-                        Log.v("USERINMANIN",state.data.firstName)
-                        Text(
-                            text = state.data.followers.toString(),
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
+
+                    Text(
+                        text = user.followers.toString(),
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+
 
                     Text(text = "followers", style = MaterialTheme.typography.titleMedium)
                 }
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            state.data?.following?.let {
-                                Text(
-                                    text = state.data.following.toString(),
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-
-
-
-
+                    Text(
+                        text = user.following.toString(),
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
                     Text(text = "following", style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = user.firstName + "" + user.lastName,
+            fontWeight = FontWeight.SemiBold
+        )
+
+        Text(
+            text = user.bio,
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            OutlinedButton(
+            Button(
                 modifier = Modifier.weight(1f),
                 onClick = {},
                 shape = RoundedCornerShape(8.dp),
                 border = BorderStroke(width = 1.dp, color = Color.Black),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Blue)
             ) {
-                Text(text = "Edit profile")
+                Text(text = "Follow")
             }
             OutlinedButton(
                 modifier = Modifier.weight(1f),
@@ -166,7 +172,7 @@ fun ProfileScreen(state: Resource<User?>) {
                 border = BorderStroke(width = 1.dp, color = Color.Black),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
             ) {
-                Text(text = "Share profile")
+                Text(text = "Message")
             }
 
             OutlinedButton(
@@ -200,7 +206,7 @@ fun ProfileScreen(state: Resource<User?>) {
             selectedTabIndex = selectedTabIndex.value,
             modifier = Modifier.fillMaxWidth(),
 
-        ) {
+            ) {
             ProfileTabs.entries.forEachIndexed { index, currentTab ->
                 Tab(
                     selected = selectedTabIndex.value == index,
@@ -226,20 +232,37 @@ fun ProfileScreen(state: Resource<User?>) {
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth().weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
         ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-                val pageText = when(it){
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                val pageText = when (it) {
                     0 -> "Your posts"
                     1 -> "Your reels"
                     2 -> "Your tags"
                     else -> ""
                 }
-                Text(text = pageText )
+                Text(text = pageText)
             }
 
         }
 
     }
+
 }
 
+@Preview
+@Composable
+fun UserPreview() {
+    InstagramCloneTheme {
+        UserScreen(
+            navigateToUp = {},
+            user = User(
+                firstName = "Adress",
+                lastName = "Mosa",
+                bio = "Medical student live in USA"
+            )
+        )
+    }
+}

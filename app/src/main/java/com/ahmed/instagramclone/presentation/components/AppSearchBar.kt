@@ -2,7 +2,6 @@ package com.ahmed.instagramclone.presentation.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
-import com.ahmed.instagramclone.ui.theme.SearchGray
 import com.ahmed.instagramclone.util.Dimens.IconSize
 
 @Composable
@@ -75,10 +73,8 @@ fun AppSearchBar(
             },
             shape = RoundedCornerShape(4.dp),
             colors = TextFieldDefaults.colors(
-                disabledContainerColor = SearchGray,
-                focusedContainerColor = SearchGray,
-                disabledTextColor =  if (isSystemInDarkTheme()) Color.White else Color.Black,
-                cursorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                disabledTextColor =  Color.Black,
+                cursorColor = Color.Black,
                 disabledIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,

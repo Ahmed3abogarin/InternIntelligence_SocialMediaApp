@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
@@ -35,6 +36,7 @@ import com.ahmed.instagramclone.presentation.reels.ReelsScreen
 import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
+import com.ahmed.instagramclone.presentation.user.UserScreen
 
 @Composable
 fun AppNavigatorScreen() {
@@ -122,22 +124,36 @@ fun AppNavigatorScreen() {
             composable(Route.ExploreScreen.route) {
                 ExploreScreen(
                     state = exploreViewModel.state.value,
-                    navigateToSearch = { navController.navigate(Route.SearchScreen.route)})
+                    navigateToSearch = { navController.navigate(Route.SearchScreen.route) })
             }
             composable(Route.SearchScreen.route) {
                 SearchScreen(
                     searchViewmodel.state.value,
                     event = searchViewmodel::onEvent,
-                    navigateToUp = { navController.navigateUp() })
+                    navigateToUp = { navController.navigateUp() },
+                    navigateToUser = { user ->
+                        navigateToUserDetails(navController, user = user)
+                    })
             }
             composable(Route.NewScreen.route) {
                 NewPostScreen(state = newViewmodel.state.value, event = newViewmodel::onEvent)
             }
             composable(Route.ReelsScreen.route) {
-                ReelsScreen(reelsViewModel.state.value)
+                ReelsScreen(
+                    reelsViewModel.state.value,
+                    navigateToUser = { user ->
+                        navigateToUserDetails(navController, user = user)
+                    })
             }
             composable(Route.ProfileScreen.route) {
                 ProfileScreen(profileViewModel.state.value!!)
+            }
+
+            composable(Route.UserScreen.route) {
+                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+                    ?.let { user ->
+                        UserScreen(user = user, navigateToUp = { navController.navigateUp() })
+                    }
             }
         }
     }
@@ -156,6 +172,14 @@ private fun navigateToTab(navController: NavController, route: String) {
         }
 
     }
+}
+
+private fun navigateToUserDetails(navController: NavController, user: User) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+    navController.navigate(
+        route = Route.UserScreen.route
+    )
+
 }
 
 data class BottomNavigationItem(
