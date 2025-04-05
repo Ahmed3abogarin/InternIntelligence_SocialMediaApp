@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -36,10 +36,11 @@ fun ExploreScreen(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(horizontal = 14.dp),
+            .background(Color.White),
     )
     {
         AppSearchBar(
+            modifier = Modifier.padding(horizontal = 14.dp),
             text = "",
             readOnly = true,
             onClick = { navigateToSearch() },
@@ -51,8 +52,7 @@ fun ExploreScreen(
         state?.data?.let {
             LazyVerticalStaggeredGrid(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(1.dp),
                 verticalItemSpacing = 1.dp,
                 columns = StaggeredGridCells.Fixed(3),
@@ -60,7 +60,7 @@ fun ExploreScreen(
                 items(it) { post ->
                     AsyncImage(
                         model = ImageRequest.Builder(context).data(post.post.image).build(),
-                        modifier = Modifier.size(100.dp),
+                        modifier = Modifier.height(110.dp).width(100.dp),
                         contentScale = ContentScale.Crop,
                         contentDescription = "post small image"
                     )

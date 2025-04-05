@@ -33,8 +33,8 @@ fun ReelPlayer(videoUrl: String) {
             addListener(object : Player.Listener {
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     if (playbackState == Player.STATE_ENDED) {
-                        seekTo(0) // Quick seek to the beginning
-                        play()      // Start playing again immediately
+                        seekTo(0)
+                        play()
                     }
                 }
             })
@@ -52,6 +52,7 @@ fun ReelPlayer(videoUrl: String) {
                     player = exoPlayer
                     useController = false
                     resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
                 })
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
