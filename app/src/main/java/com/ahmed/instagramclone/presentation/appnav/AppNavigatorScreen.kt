@@ -153,7 +153,7 @@ fun AppNavigatorScreen() {
                     })
             }
             composable(Route.ProfileScreen.route) {
-                ProfileScreen(profileViewModel.state.value!!)
+                ProfileScreen(state = profileViewModel.state.value!!, posts = profileViewModel.postsState.value)
             }
             composable("userScreen/{user_id}") {
                 val userViewModel: UserViewModel = hiltViewModel()

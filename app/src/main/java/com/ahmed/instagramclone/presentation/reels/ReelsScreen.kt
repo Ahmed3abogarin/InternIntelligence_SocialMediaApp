@@ -71,8 +71,7 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(end = 6.dp)
-                        .padding(bottom = 18.dp)
+                        .padding(end = 6.dp,bottom = 50.dp)
                 ) {
                     Icon(
                         modifier = Modifier.size(34.dp),
@@ -80,7 +79,7 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                         contentDescription = null,
                         tint = Color.White
                     )
-                    Text(text = reel.post.likes.size.toString(), fontSize = 12.sp)
+                    Text(text = reel.post.likes.size.toString(), fontSize = 12.sp,color = Color.White)
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         modifier = Modifier.size(26.dp),
@@ -103,13 +102,13 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                         tint = Color.White
                     )
                 }
-                if (isPlaying.value){
+                if (!isPlaying.value){
                     IconButton(modifier = Modifier.align(Alignment.Center), onClick = {}) {
                         Icon(
-                            modifier = Modifier.size(34.dp),
+                            modifier = Modifier.size(42.dp),
                             imageVector = Icons.Default.PlayArrow,
                             contentDescription = "app logo",
-                            tint = Color.White.copy(alpha = 0.5f)
+                            tint = Color.White.copy(alpha = 0.6f)
 
                         )
                     }

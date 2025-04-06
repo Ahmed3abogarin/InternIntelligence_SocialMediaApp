@@ -30,4 +30,6 @@ interface AppRepository {
      fun uploadStory(userId: String,videoUri: Uri): Flow<Resource<Unit>>
 
      fun getUserStory(userId: String): Flow<Resource<List<Story>>>
+
+     fun getUserPosts(userId: String): Flow<Resource<List<PostWithAuthor>>>
 }

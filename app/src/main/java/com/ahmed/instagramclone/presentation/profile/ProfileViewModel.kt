@@ -3,6 +3,7 @@ package com.ahmed.instagramclone.presentation.profile
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.util.Resource
@@ -20,9 +21,13 @@ class ProfileViewModel @Inject constructor(
     private val _state = mutableStateOf<Resource<User?>?>(null)
     val state = _state
 
+    private val _postsState = mutableStateOf<Resource<List<PostWithAuthor>>?>(null)
+    val postsState = _postsState
+
 
     init {
         getUser()
+        getPosts()
     }
 
     private fun getUser(){
@@ -31,6 +36,13 @@ class ProfileViewModel @Inject constructor(
                 _state.value = it
             }
         }
+    }
 
+    private fun getPosts(){
+        viewModelScope.launch {
+            appUseCases.getUserPosts(auth.currentUser!!.uid).collect{
+                _postsState.value = it
+            }
+        }
     }
 }

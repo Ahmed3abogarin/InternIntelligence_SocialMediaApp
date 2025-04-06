@@ -250,6 +250,28 @@ class AppRepositoryImpl @Inject constructor(
 
     }
 
+    override fun getUserPosts(userId: String) = flow {
+        emit(Resource.Loading())
+
+        val snapshot = db.collection("posts").whereEqualTo("authorId",userId).get().await()
+        val posts = snapshot.toObjects(Post::class.java)
+
+        val postsWithAuthors = posts.mapNotNull { post ->
+            val authorFlow = getUser(post.authorId)
+                .filterIsInstance<Resource.Success<User>>()
+                .map { it.data }
+                .catch { emit(User()) }
+                .firstOrNull()
+
+            PostWithAuthor(post = post, author = authorFlow ?: User())
+        }
+
+        emit(Resource.Success(postsWithAuthors))
+    }.catch { e ->
+        Log.v("MYPOSTS", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
+
 
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)

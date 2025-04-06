@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -24,27 +25,24 @@ import androidx.media3.ui.PlayerView
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ReelPlayer(videoUrl: String,isPlaying: MutableState<Boolean>) {
+fun ReelPlayer(videoUrl: String, isPlaying: MutableState<Boolean>) {
     val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             setHandleAudioBecomingNoisy(false)
+            repeatMode = Player.REPEAT_MODE_ONE
             prepare()
             playWhenReady = true
-            if (isPlaying.value){
-                stop()
-            }
-
-            // Add listener for smoother looping
-            addListener(object : Player.Listener {
-                override fun onPlaybackStateChanged(playbackState: Int) {
-                    if (playbackState == Player.STATE_ENDED) {
-                        seekTo(0)
-                        play()
-                    }
-                }
-            })
+//            // Add listener for smoother looping
+//            addListener(object : Player.Listener {
+//                override fun onPlaybackStateChanged(playbackState: Int) {
+//                    if (playbackState == Player.STATE_ENDED) {
+//                        seekTo(0)
+//                        play()
+//                    }
+//                }
+//            })
         }
     }
     DisposableEffect(Unit) {
@@ -54,6 +52,11 @@ fun ReelPlayer(videoUrl: String,isPlaying: MutableState<Boolean>) {
 
     }
 
+    if (!isPlaying.value) {
+        exoPlayer.pause()
+    } else {
+        exoPlayer.play()
+    }
 
     AndroidView(
         modifier = Modifier
@@ -98,7 +101,7 @@ fun ReelPlayer(videoUrl: String,isPlaying: MutableState<Boolean>) {
 
 @OptIn(UnstableApi::class)
 @Composable
-fun ReelPlayer(videoUrl: Uri,isPlaying: MutableState<Boolean>) {
+fun ReelPlayer(videoUrl: Uri, isPlaying: MutableState<Boolean>) {
     val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
@@ -106,7 +109,7 @@ fun ReelPlayer(videoUrl: Uri,isPlaying: MutableState<Boolean>) {
             setHandleAudioBecomingNoisy(false)
             prepare()
             playWhenReady = true
-            if (isPlaying.value){
+            if (isPlaying.value) {
                 stop()
             }
 
