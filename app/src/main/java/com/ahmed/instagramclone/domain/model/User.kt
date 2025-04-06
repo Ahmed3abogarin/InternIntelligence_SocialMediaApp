@@ -11,8 +11,9 @@ data class User(
     val email: String = "",
     val bio: String = "",
     val imagePath: String = "",
+    val hasStory: Boolean = false,
     val followers: List<String> = listOf(),
     val following: List<String> = listOf(),
 //    val chatList: List<ChatData> = listOf()
-): Parcelable
+) : Parcelable
 

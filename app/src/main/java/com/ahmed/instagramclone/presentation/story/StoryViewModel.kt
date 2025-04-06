@@ -1,31 +1,37 @@
 package com.ahmed.instagramclone.presentation.story
 
-import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.model.Story
+import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Resource
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class StoryViewModel @Inject constructor(
-    private val appUseCases: AppUseCases,
-    private val auth: FirebaseAuth,
-) : ViewModel() {
-
-    private val _state = mutableStateOf<Resource<Unit>?>(null)
+    private val appRepository: AppRepository,
+    savedStateHandle: SavedStateHandle
+): ViewModel() {
+    private val _state = mutableStateOf<Resource<List<Story>>?>(null)
     val state = _state
 
-    fun uploadStory(videoUri: Uri) {
+    init {
+        savedStateHandle.get<String>("user_id")?.let {
+            getStory(it)
+        }
+    }
+
+    private fun getStory(userId: String){
+        Log.v("GETSTORY","GET STORY callled")
         viewModelScope.launch {
-            appUseCases.uploadStory(userId = auth.currentUser!!.uid, videoUri = videoUri).collect{
+            appRepository.getUserStory(userId).collect{
                 _state.value = it
             }
         }
-
     }
 }

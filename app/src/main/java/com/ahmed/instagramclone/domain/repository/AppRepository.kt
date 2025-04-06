@@ -3,6 +3,7 @@ package com.ahmed.instagramclone.domain.repository
 import android.net.Uri
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.ReelWithAuthor
+import com.ahmed.instagramclone.domain.model.Story
 import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
 import kotlinx.coroutines.flow.Flow
@@ -27,4 +28,6 @@ interface AppRepository {
      fun unfollowUser(currentUserId: String,targetUserId: String): Flow<Resource<Unit>>
 
      fun uploadStory(userId: String,videoUri: Uri): Flow<Resource<Unit>>
+
+     fun getUserStory(userId: String): Flow<Resource<List<Story>>>
 }

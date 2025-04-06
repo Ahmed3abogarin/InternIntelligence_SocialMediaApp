@@ -8,6 +8,7 @@ import com.ahmed.instagramclone.domain.usecases.CreateNewUser
 import com.ahmed.instagramclone.domain.usecases.FollowUser
 import com.ahmed.instagramclone.domain.usecases.GetPosts
 import com.ahmed.instagramclone.domain.usecases.GetReels
+import com.ahmed.instagramclone.domain.usecases.GetStory
 import com.ahmed.instagramclone.domain.usecases.GetUser
 import com.ahmed.instagramclone.domain.usecases.SearchUser
 import com.ahmed.instagramclone.domain.usecases.SignIn
@@ -67,6 +68,7 @@ object AppModule {
         getReels = GetReels(appRepository),
         followUser = FollowUser(appRepository),
         unfollowUser = UnfollowUser(appRepository),
-        uploadStory = UploadStory(appRepository)
+        uploadStory = UploadStory(appRepository),
+        getStory = GetStory(appRepository)
     )
 }

@@ -211,7 +211,8 @@ class AppRepositoryImpl @Inject constructor(
     }
 
     override fun uploadStory(userId: String, videoUri: Uri): Flow<Resource<Unit>> = flow {
-        val postsStorage = storage.reference.child("stories/${auth.currentUser!!.uid}/${UUID.randomUUID()}")
+        val postsStorage =
+            storage.reference.child("stories/${auth.currentUser!!.uid}/${UUID.randomUUID()}")
         val result = postsStorage.putFile(videoUri).await()
 
         val downloadUrl = result.storage.downloadUrl.await().toString()
@@ -220,7 +221,10 @@ class AppRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
             val story = Story(downloadUrl)
-            db.collection("Instagram_user").document(auth.currentUser!!.uid).collection("story").add(story)
+            db.collection("Instagram_user").document(auth.currentUser!!.uid).collection("story")
+                .add(story)
+            db.collection("Instagram_user").document(auth.currentUser!!.uid)
+                .update("hasStory", true)
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error(e.message.toString()))
@@ -228,6 +232,21 @@ class AppRepositoryImpl @Inject constructor(
 
         }
 
+
+    }
+
+    override fun getUserStory(userId: String): Flow<Resource<List<Story>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val ref =
+                db.collection("Instagram_user").document(userId).collection("story").get().await()
+            val userStory = ref.toObjects(Story::class.java)
+
+            emit(Resource.Success(userStory))
+
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message.toString()))
+        }
 
     }
 

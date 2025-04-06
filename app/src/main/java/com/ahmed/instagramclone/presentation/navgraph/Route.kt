@@ -13,7 +13,8 @@ sealed class Route(val route: String) {
     data object UserScreen: Route(route = "userScreen/{user_id}")
 
 
-    data object StoryScreen: Route(route = "storyScreen")
+    data object StoryCreateScreen: Route(route = "storyCreateScreen")
+    data object StoryScreen: Route(route = "storyScreen/{user_id}")
 
     data object AppStartNavigation: Route(route = "appLoginScreen")
     data object AppMainNavigation: Route(route = "appMainScreen")

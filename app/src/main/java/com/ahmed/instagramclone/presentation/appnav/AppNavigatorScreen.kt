@@ -35,7 +35,9 @@ import com.ahmed.instagramclone.presentation.reels.ReelsScreen
 import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
+import com.ahmed.instagramclone.presentation.story.StoryCreateScreen
 import com.ahmed.instagramclone.presentation.story.StoryScreen
+import com.ahmed.instagramclone.presentation.story.StoryCreateViewModel
 import com.ahmed.instagramclone.presentation.story.StoryViewModel
 import com.ahmed.instagramclone.presentation.user.UserScreen
 import com.ahmed.instagramclone.presentation.user.UserViewModel
@@ -58,7 +60,7 @@ fun AppNavigatorScreen() {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val reelsViewModel: ReelsViewModel = hiltViewModel()
     val exploreViewModel: ExploreViewModel = hiltViewModel()
-    val storyViewModel: StoryViewModel = hiltViewModel()
+    val storyCreateViewModel: StoryCreateViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -124,7 +126,7 @@ fun AppNavigatorScreen() {
             composable(Route.HomeScreen.route) {
                 HomeScreen(
                     homeViewmodel.state.value,
-                    navigateToStory = { navController.navigate(Route.StoryScreen.route) })
+                    navigateToStory = { navController.navigate(Route.StoryCreateScreen.route) })
             }
             composable(Route.ExploreScreen.route) {
                 ExploreScreen(
@@ -162,15 +164,29 @@ fun AppNavigatorScreen() {
                     state = userViewModel.state.value,
                     navigateToUp = { navController.navigateUp() },
                     event = userViewModel::onEvent,
+                    navigateToUserStory = { id ->
+                        navigateToStory(navController, id)
+                    }
                 )
 
             }
 
-            composable(Route.StoryScreen.route) {
-                StoryScreen(storyViewModel)
+            composable(Route.StoryCreateScreen.route) {
+                StoryCreateScreen(storyCreateViewModel)
+            }
+
+            composable("storyScreen/{user_id}"){
+                val storyViewModel: StoryViewModel = hiltViewModel()
+
+                StoryScreen(storyViewModel.state.value)
+
             }
         }
     }
+}
+private fun navigateToStory(navController: NavController, userId: String){
+    navController.navigate("storyScreen/$userId")
+
 }
 
 private fun navigateToTab(navController: NavController, route: String) {
