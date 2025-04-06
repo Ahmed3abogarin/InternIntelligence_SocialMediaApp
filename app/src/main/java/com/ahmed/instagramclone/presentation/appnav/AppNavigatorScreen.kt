@@ -21,7 +21,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
-import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
@@ -57,7 +56,6 @@ fun AppNavigatorScreen() {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val reelsViewModel: ReelsViewModel = hiltViewModel()
     val exploreViewModel: ExploreViewModel = hiltViewModel()
-    val userViewModel: UserViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -134,7 +132,7 @@ fun AppNavigatorScreen() {
                     event = searchViewmodel::onEvent,
                     navigateToUp = { navController.navigateUp() },
                     navigateToUser = { user ->
-                        navigateToUserDetails(navController, user = user)
+                        navigateToUserDetails(navController, userId = user.userId)
                     })
             }
             composable(Route.NewScreen.route) {
@@ -144,21 +142,23 @@ fun AppNavigatorScreen() {
                 ReelsScreen(
                     reelsViewModel.state.value,
                     navigateToUser = { user ->
-                        navigateToUserDetails(navController, user = user)
+                        navigateToUserDetails(navController, userId = user.userId)
                     })
             }
             composable(Route.ProfileScreen.route) {
                 ProfileScreen(profileViewModel.state.value!!)
             }
-            composable(Route.UserScreen.route) {
-                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
-                    ?.let { user ->
-                        UserScreen(
-                            user = user,
-                            navigateToUp = { navController.navigateUp() },
-                            event = userViewModel::onEvent
-                        )
-                    }
+            composable("userScreen/{user_id}") {
+                val userViewModel: UserViewModel = hiltViewModel()
+
+
+                UserScreen(
+                    isFollowing = userViewModel.isFollowing,
+                    state = userViewModel.state.value,
+                    navigateToUp = { navController.navigateUp() },
+                    event = userViewModel::onEvent,
+                )
+
             }
         }
     }
@@ -179,11 +179,8 @@ private fun navigateToTab(navController: NavController, route: String) {
     }
 }
 
-private fun navigateToUserDetails(navController: NavController, user: User) {
-    navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
-    navController.navigate(
-        route = Route.UserScreen.route
-    )
+private fun navigateToUserDetails(navController: NavController, userId: String) {
+    navController.navigate(route = "userScreen/$userId")
 
 }
 

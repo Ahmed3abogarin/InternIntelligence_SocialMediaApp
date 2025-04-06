@@ -13,6 +13,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
@@ -76,18 +79,22 @@ class AppRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getUser(userId: String) = flow {
-        emit(Resource.Loading())
-        val user = db.collection("Instagram_user")
-            .document(userId)
-            .get()
-            .await()
-            .toObject(User::class.java)
+    override fun getUser(userId: String): Flow<Resource<User?>> = callbackFlow {
+        trySend(Resource.Loading())
 
-        emit(Resource.Success(user))
-    }.catch { e ->
-        Log.v("GETUSERTOOL", e.message.toString())
-        emit(Resource.Error(e.message.toString()))
+        val listener = db.collection("Instagram_user")
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(Resource.Error(error.message ?: "Unexpected error"))
+                    return@addSnapshotListener
+                }
+
+                val user = snapshot?.toObject(User::class.java)
+                trySend(Resource.Success(user))
+            }
+
+        awaitClose { listener.remove() }
     }
 
     override fun getPosts() = flow {
@@ -172,6 +179,26 @@ class AppRepositoryImpl @Inject constructor(
 
             // add target user to current following list
             batch.update(currentUserRef,"following",FieldValue.arrayUnion(targetUserId))
+
+        }
+        emit(Resource.Success(Unit))
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
+
+    override fun unfollowUser(currentUserId: String, targetUserId: String)= flow {
+        emit(Resource.Loading())
+        val currentUserRef = db.collection("Instagram_user").document(currentUserId)
+        val targetUserRef = db.collection("Instagram_user").document(targetUserId)
+        db.runBatch { batch ->
+            // remove current user from target user followers ( unfollow person)
+            Log.v("TAGY","current user Id = $currentUserId")
+            Log.v("TAGY","target user Id = $targetUserId")
+            batch.update(targetUserRef,"followers",FieldValue.arrayRemove(currentUserId))
+
+            // remove target user from current following list
+            batch.update(currentUserRef,"following",FieldValue.arrayRemove(targetUserId))
 
         }
         emit(Resource.Success(Unit))

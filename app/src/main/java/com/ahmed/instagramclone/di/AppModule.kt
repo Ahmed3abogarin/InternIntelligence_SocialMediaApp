@@ -11,6 +11,7 @@ import com.ahmed.instagramclone.domain.usecases.GetReels
 import com.ahmed.instagramclone.domain.usecases.GetUser
 import com.ahmed.instagramclone.domain.usecases.SearchUser
 import com.ahmed.instagramclone.domain.usecases.SignIn
+import com.ahmed.instagramclone.domain.usecases.UnfollowUser
 import com.ahmed.instagramclone.domain.usecases.UploadPost
 import com.ahmed.instagramclone.repository.AppRepositoryImpl
 import com.google.firebase.Firebase
@@ -49,9 +50,9 @@ object AppModule {
     fun provideAppRepository(
         auth: FirebaseAuth,
         firebaseFireStore: FirebaseFirestore,
-        storage: FirebaseStorage
+        storage: FirebaseStorage,
     )
-    : AppRepository = AppRepositoryImpl(auth,firebaseFireStore, storage)
+            : AppRepository = AppRepositoryImpl(auth, firebaseFireStore, storage)
 
     @Provides
     @Singleton
@@ -63,6 +64,7 @@ object AppModule {
         uploadPost = UploadPost(appRepository),
         getUser = GetUser(appRepository),
         getReels = GetReels(appRepository),
-        followUser = FollowUser(appRepository)
+        followUser = FollowUser(appRepository),
+        unfollowUser = UnfollowUser(appRepository)
     )
 }

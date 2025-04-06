@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.user
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,9 +35,13 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,18 +50,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.ProfileTabs
 import com.ahmed.instagramclone.domain.model.User
-import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserScreen(user: User, navigateToUp: () -> Unit,event: (UserEvent) -> Unit ){
+fun UserScreen(
+    state: Resource<User?>?,
+    navigateToUp: () -> Unit,
+    isFollowing: MutableState<Boolean>,
+    event: (UserEvent) -> Unit,
+) {
 
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { ProfileTabs.entries.size })
@@ -66,204 +75,227 @@ fun UserScreen(user: User, navigateToUp: () -> Unit,event: (UserEvent) -> Unit )
     val context = LocalContext.current
 
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .padding(8.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            IconButton(onClick = { navigateToUp() }) {
-                Icon(
-                    modifier = Modifier.size(38.dp),
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null
-                )
-            }
+    when (state) {
+        is Resource.Success -> {
+            state.data?.let {
+                val user = it
+                var followers by remember { mutableIntStateOf(user.followers.size) }
 
-            Text(
-                text = user.firstName + "" + user.lastName,
-                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold)
-            )
-
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-        Row {
-
-            AsyncImage(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(90.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black),
-                model = ImageRequest.Builder(context).data(context).data(user.imagePath).build(),
-                contentDescription = "user image",
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(22.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "0",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(text = "posts", style = MaterialTheme.typography.titleMedium)
+                val updatedFollowers = user.followers.size
+                if (followers != updatedFollowers) {
+                    followers = updatedFollowers
                 }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                    Text(
-                        text = user.followers.size.toString(),
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-
-
-                    Text(text = "followers", style = MaterialTheme.typography.titleMedium)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = user.following.size.toString(),
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(text = "following", style = MaterialTheme.typography.titleMedium)
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(6.dp))
-
-        Text(
-            text = user.firstName + "" + user.lastName,
-            fontWeight = FontWeight.SemiBold
-        )
-
-        Text(
-            text = user.bio,
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {event(UserEvent.FollowUser(targetUserId = user.userId))},
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(width = 1.dp, color = Color.Black),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Blue)
-            ) {
-                Text(text = "Follow")
-            }
-            OutlinedButton(
-                modifier = Modifier.weight(1f),
-                onClick = {},
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(width = 1.dp, color = Color.Black),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
-            ) {
-                Text(text = "Message")
-            }
-
-            OutlinedButton(
-                modifier = Modifier.weight(0.25f),
-                onClick = {},
-                shape = RoundedCornerShape(8.dp),
-                border = BorderStroke(width = 1.dp, color = Color.Black),
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Black,
-                    imageVector = Icons.Default.PersonAddAlt,
-                    contentDescription = null
-                )
-            }
-
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        TabRow(
-            indicator = { tabPositions ->
-                SecondaryIndicator(
+                Column(
                     modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[selectedTabIndex.value])
-                        .fillMaxWidth(0.2f)
-                        .background(Color.Red, shape = RoundedCornerShape(50)),
-                    color = Color.Red
-                )
-            },
-            selectedTabIndex = selectedTabIndex.value,
-            modifier = Modifier.fillMaxWidth(),
+                        .fillMaxSize()
+                        .statusBarsPadding()
+                        .padding(8.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        IconButton(onClick = { navigateToUp() }) {
+                            Icon(
+                                modifier = Modifier.size(38.dp),
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
 
-            ) {
-            ProfileTabs.entries.forEachIndexed { index, currentTab ->
-                Tab(
-                    selected = selectedTabIndex.value == index,
-                    selectedContentColor = Color.Black,
-                    unselectedContentColor = Color.Black,
-                    onClick = {
-                        scope.launch { pagerState.animateScrollToPage(currentTab.ordinal) }
-                    },
-                    icon = {
-                        Icon(
-                            modifier = Modifier.size(28.dp),
-                            painter = painterResource(
-                                if (selectedTabIndex.value == index)
-                                    currentTab.selectedIcon else currentTab.unselectedIcon
-                            ),
-                            contentDescription = null
+                        Text(
+                            text = user.firstName + " " + user.lastName,
+                            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold)
                         )
+
                     }
-                )
 
-            }
-        }
+                    Spacer(modifier = Modifier.height(18.dp))
+                    Row {
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                val pageText = when (it) {
-                    0 -> "Your posts"
-                    1 -> "Your reels"
-                    2 -> "Your tags"
-                    else -> ""
+                        AsyncImage(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(90.dp)
+                                .clip(CircleShape)
+                                .background(Color.Black),
+                            model = ImageRequest.Builder(context).data(context).data(user.imagePath)
+                                .build(),
+                            contentDescription = "user image",
+                            contentScale = ContentScale.Crop
+                        )
+
+                        Spacer(modifier = Modifier.width(22.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "0",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                Text(text = "posts", style = MaterialTheme.typography.titleMedium)
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                                Text(
+                                    text = followers.toString(),
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+
+
+                                Text(
+                                    text = "followers",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = user.following.size.toString(),
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                Text(
+                                    text = "following",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = user.firstName + " " + user.lastName,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
+                    Text(
+                        text = user.bio,
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Button(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                event(UserEvent.FollowUnfollowUser)
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(width = 1.dp, color = Color.Black),
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Blue)
+                        ) {
+                            Text(text = if (isFollowing.value) "Following" else "Follow")
+                        }
+                        OutlinedButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {},
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(width = 1.dp, color = Color.Black),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)
+                        ) {
+                            Text(text = "Message")
+                        }
+
+                        OutlinedButton(
+                            modifier = Modifier.weight(0.25f),
+                            onClick = {},
+                            shape = RoundedCornerShape(8.dp),
+                            border = BorderStroke(width = 1.dp, color = Color.Black),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.Black,
+                                imageVector = Icons.Default.PersonAddAlt,
+                                contentDescription = null
+                            )
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TabRow(
+                        indicator = { tabPositions ->
+                            SecondaryIndicator(
+                                modifier = Modifier
+                                    .tabIndicatorOffset(tabPositions[selectedTabIndex.value])
+                                    .fillMaxWidth(0.2f)
+                                    .background(Color.Red, shape = RoundedCornerShape(50)),
+                                color = Color.Red
+                            )
+                        },
+                        selectedTabIndex = selectedTabIndex.value,
+                        modifier = Modifier.fillMaxWidth(),
+
+                        ) {
+                        ProfileTabs.entries.forEachIndexed { index, currentTab ->
+                            Tab(
+                                selected = selectedTabIndex.value == index,
+                                selectedContentColor = Color.Black,
+                                unselectedContentColor = Color.Black,
+                                onClick = {
+                                    scope.launch { pagerState.animateScrollToPage(currentTab.ordinal) }
+                                },
+                                icon = {
+                                    Icon(
+                                        modifier = Modifier.size(28.dp),
+                                        painter = painterResource(
+                                            if (selectedTabIndex.value == index)
+                                                currentTab.selectedIcon else currentTab.unselectedIcon
+                                        ),
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+
+                        }
+                    }
+
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val pageText = when (it) {
+                                0 -> "Your posts"
+                                1 -> "Your reels"
+                                2 -> "Your tags"
+                                else -> ""
+                            }
+                            Text(text = pageText)
+                        }
+
+                    }
+
                 }
-                Text(text = pageText)
             }
 
         }
 
+        is Resource.Error -> {
+            Toast.makeText(context, "Error occurred", Toast.LENGTH_SHORT).show()
+        }
+
+        is Resource.Loading -> {
+            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+        }
+
+        else -> Unit
     }
+
 
 }
 
-@Preview
-@Composable
-fun UserPreview() {
-    InstagramCloneTheme {
-        UserScreen(
-            navigateToUp = {},
-            user = User(
-                firstName = "Adress",
-                lastName = "Mosa",
-                bio = "Medical student live in USA"
-            ),
-            event = {}
-        )
-    }
-}

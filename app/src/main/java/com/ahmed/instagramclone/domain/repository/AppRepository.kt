@@ -22,4 +22,6 @@ interface AppRepository {
      fun uploadPost(id: String, description: String,byteArray: ByteArray): Flow<Resource<Unit>>
 
      fun followUser(currentUserId: String,targetUserId: String): Flow<Resource<Unit>>
+
+     fun unfollowUser(currentUserId: String,targetUserId: String): Flow<Resource<Unit>>
 }
