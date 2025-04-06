@@ -13,6 +13,7 @@ import com.ahmed.instagramclone.domain.usecases.SearchUser
 import com.ahmed.instagramclone.domain.usecases.SignIn
 import com.ahmed.instagramclone.domain.usecases.UnfollowUser
 import com.ahmed.instagramclone.domain.usecases.UploadPost
+import com.ahmed.instagramclone.domain.usecases.UploadStory
 import com.ahmed.instagramclone.repository.AppRepositoryImpl
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -65,6 +66,7 @@ object AppModule {
         getUser = GetUser(appRepository),
         getReels = GetReels(appRepository),
         followUser = FollowUser(appRepository),
-        unfollowUser = UnfollowUser(appRepository)
+        unfollowUser = UnfollowUser(appRepository),
+        uploadStory = UploadStory(appRepository)
     )
 }

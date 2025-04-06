@@ -1,6 +1,7 @@
 package com.ahmed.instagramclone.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun StoryList(){
+fun StoryList(navigateToStory : () -> Unit){
     val myColors = listOf(
         Color.Cyan,
         Color.Yellow
@@ -34,7 +35,7 @@ fun StoryList(){
         modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         item {
-            Column {
+            Column(modifier = Modifier.clickable { navigateToStory()  }) {
                 Box(
                     modifier = Modifier
                         .size(80.dp)

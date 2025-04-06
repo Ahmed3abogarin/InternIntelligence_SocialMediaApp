@@ -35,6 +35,8 @@ import com.ahmed.instagramclone.presentation.reels.ReelsScreen
 import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
+import com.ahmed.instagramclone.presentation.story.StoryScreen
+import com.ahmed.instagramclone.presentation.story.StoryViewModel
 import com.ahmed.instagramclone.presentation.user.UserScreen
 import com.ahmed.instagramclone.presentation.user.UserViewModel
 
@@ -56,6 +58,7 @@ fun AppNavigatorScreen() {
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val reelsViewModel: ReelsViewModel = hiltViewModel()
     val exploreViewModel: ExploreViewModel = hiltViewModel()
+    val storyViewModel: StoryViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -119,7 +122,9 @@ fun AppNavigatorScreen() {
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(Route.HomeScreen.route) {
-                HomeScreen(homeViewmodel.state.value)
+                HomeScreen(
+                    homeViewmodel.state.value,
+                    navigateToStory = { navController.navigate(Route.StoryScreen.route) })
             }
             composable(Route.ExploreScreen.route) {
                 ExploreScreen(
@@ -159,6 +164,10 @@ fun AppNavigatorScreen() {
                     event = userViewModel::onEvent,
                 )
 
+            }
+
+            composable(Route.StoryScreen.route) {
+                StoryScreen(storyViewModel)
             }
         }
     }

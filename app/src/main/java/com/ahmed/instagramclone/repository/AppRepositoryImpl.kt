@@ -1,10 +1,12 @@
 package com.ahmed.instagramclone.repository
 
+import android.net.Uri
 import android.util.Log
 import com.ahmed.instagramclone.domain.model.Post
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.Reel
 import com.ahmed.instagramclone.domain.model.ReelWithAuthor
+import com.ahmed.instagramclone.domain.model.Story
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
@@ -169,16 +172,16 @@ class AppRepositoryImpl @Inject constructor(
 
     }
 
-    override fun followUser(currentUserId: String,targetUserId: String) = flow {
+    override fun followUser(currentUserId: String, targetUserId: String) = flow {
         emit(Resource.Loading())
         val currentUserRef = db.collection("Instagram_user").document(currentUserId)
         val targetUserRef = db.collection("Instagram_user").document(targetUserId)
         db.runBatch { batch ->
             // add current user to target user followers ( follow person)
-            batch.update(targetUserRef,"followers",FieldValue.arrayUnion(currentUserId))
+            batch.update(targetUserRef, "followers", FieldValue.arrayUnion(currentUserId))
 
             // add target user to current following list
-            batch.update(currentUserRef,"following",FieldValue.arrayUnion(targetUserId))
+            batch.update(currentUserRef, "following", FieldValue.arrayUnion(targetUserId))
 
         }
         emit(Resource.Success(Unit))
@@ -187,24 +190,45 @@ class AppRepositoryImpl @Inject constructor(
         emit(Resource.Error(e.message.toString()))
     }
 
-    override fun unfollowUser(currentUserId: String, targetUserId: String)= flow {
+    override fun unfollowUser(currentUserId: String, targetUserId: String) = flow {
         emit(Resource.Loading())
         val currentUserRef = db.collection("Instagram_user").document(currentUserId)
         val targetUserRef = db.collection("Instagram_user").document(targetUserId)
         db.runBatch { batch ->
             // remove current user from target user followers ( unfollow person)
-            Log.v("TAGY","current user Id = $currentUserId")
-            Log.v("TAGY","target user Id = $targetUserId")
-            batch.update(targetUserRef,"followers",FieldValue.arrayRemove(currentUserId))
+            Log.v("TAGY", "current user Id = $currentUserId")
+            Log.v("TAGY", "target user Id = $targetUserId")
+            batch.update(targetUserRef, "followers", FieldValue.arrayRemove(currentUserId))
 
             // remove target user from current following list
-            batch.update(currentUserRef,"following",FieldValue.arrayRemove(targetUserId))
+            batch.update(currentUserRef, "following", FieldValue.arrayRemove(targetUserId))
 
         }
         emit(Resource.Success(Unit))
     }.catch { e ->
         Log.v("GETUSERTOOL", e.message.toString())
         emit(Resource.Error(e.message.toString()))
+    }
+
+    override fun uploadStory(userId: String, videoUri: Uri): Flow<Resource<Unit>> = flow {
+        val postsStorage = storage.reference.child("stories/${auth.currentUser!!.uid}/${UUID.randomUUID()}")
+        val result = postsStorage.putFile(videoUri).await()
+
+        val downloadUrl = result.storage.downloadUrl.await().toString()
+
+
+        try {
+            emit(Resource.Loading())
+            val story = Story(downloadUrl)
+            db.collection("Instagram_user").document(auth.currentUser!!.uid).collection("story").add(story)
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message.toString()))
+            Log.v("UPLOADPOST", e.message.toString())
+
+        }
+
+
     }
 
 

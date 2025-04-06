@@ -120,7 +120,7 @@ fun PostCard(post: PostWithAuthor) {
 
 
 @Composable
-fun PostsList(posts: List<PostWithAuthor>){
+fun PostsList(posts: List<PostWithAuthor>, navigateToStory : () -> Unit){
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(
@@ -154,7 +154,7 @@ fun PostsList(posts: List<PostWithAuthor>){
 
             }
             Spacer(modifier = Modifier.height(12.dp))
-            StoryList()
+            StoryList(navigateToStory = navigateToStory)
             Spacer(modifier = Modifier.height(12.dp))
         }
         items(posts){

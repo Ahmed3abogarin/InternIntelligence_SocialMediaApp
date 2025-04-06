@@ -12,7 +12,7 @@ import com.ahmed.instagramclone.presentation.components.PostsList
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun HomeScreen(state: Resource<List<PostWithAuthor>>?) {
+fun HomeScreen(state: Resource<List<PostWithAuthor>>?,navigateToStory: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -27,7 +27,7 @@ fun HomeScreen(state: Resource<List<PostWithAuthor>>?) {
 
             is Resource.Success -> {
                 state.data?.let {
-                    PostsList(state.data)
+                    PostsList(state.data, navigateToStory = navigateToStory )
                 }
 
             }

@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.components
 
+import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.OptIn
@@ -24,6 +25,80 @@ import androidx.media3.ui.PlayerView
 @OptIn(UnstableApi::class)
 @Composable
 fun ReelPlayer(videoUrl: String,isPlaying: MutableState<Boolean>) {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUrl))
+            setHandleAudioBecomingNoisy(false)
+            prepare()
+            playWhenReady = true
+            if (isPlaying.value){
+                stop()
+            }
+
+            // Add listener for smoother looping
+            addListener(object : Player.Listener {
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_ENDED) {
+                        seekTo(0)
+                        play()
+                    }
+                }
+            })
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+
+    }
+
+
+    AndroidView(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable { isPlaying.value = !isPlaying.value }
+            .background(Color.Red),
+        factory = { con ->
+            FrameLayout(con).apply {
+                addView(PlayerView(con).apply {
+                    player = exoPlayer
+                    useController = false
+                    resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
+                })
+                layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }
+        }
+    )
+
+
+//    AndroidView(
+//        modifier = Modifier.fillMaxSize().background(Color.Red),
+//        factory = { ctx ->
+//            PlayerView(ctx).apply {
+//                player = exoPlayer
+//                useController = false
+//                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+//
+//            }
+//        },
+//        update = { playerView -> // Use update to configure the PlayerView
+//            playerView.layoutParams = ViewGroup.LayoutParams(
+//                ViewGroup.LayoutParams.MATCH_PARENT,
+//                ViewGroup.LayoutParams.MATCH_PARENT
+//            )
+//        }
+//    )
+}
+
+@OptIn(UnstableApi::class)
+@Composable
+fun ReelPlayer(videoUrl: Uri,isPlaying: MutableState<Boolean>) {
     val context = LocalContext.current
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
