@@ -52,26 +52,32 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
         ) {
             val reel = reels[it]
             Box {
-                ReelPlayer(reel.post.videoUrl, isPlaying = isPlaying )
+                ReelPlayer(reel.post.videoUrl, isPlaying = isPlaying)
                 Row(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .navigationBarsPadding()
                 ) {
-                    SearchCard(reel.author, textColor = Color.White, navigateToUser = { navigateToUser(reel.author) })
+                    SearchCard(
+                        reel.author,
+                        textColor = Color.White,
+                        navigateToUser = { navigateToUser(reel.author) })
                 }
                 Text(
                     modifier = Modifier
                         .statusBarsPadding()
                         .padding(start = 16.dp, top = 6.dp),
                     text = "Reels",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.SemiBold, color = Color.White)
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
+                    )
                 )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(end = 6.dp,bottom = 50.dp)
+                        .padding(end = 6.dp, bottom = 50.dp)
                 ) {
                     Icon(
                         modifier = Modifier.size(34.dp),
@@ -79,8 +85,12 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                         contentDescription = null,
                         tint = Color.White
                     )
-                    Text(text = reel.post.likes.size.toString(), fontSize = 12.sp,color = Color.White)
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = reel.post.likes.size.toString(),
+                        fontSize = 12.sp,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
                     Icon(
                         modifier = Modifier.size(26.dp),
                         painter = painterResource(R.drawable.ic_comment),
@@ -88,22 +98,26 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                         tint = Color.White
                     )
                     Text(text = "121", fontSize = 12.sp, color = Color.White)
+                    Spacer(modifier = Modifier.width(6.dp))
                     Icon(
                         modifier = Modifier.size(34.dp),
                         painter = painterResource(R.drawable.ic_send),
                         contentDescription = "app logo",
                         tint = Color.White
                     )
-                    Text(text = "24", fontSize = 12.sp,color = Color.White)
+                    Text(text = "24", fontSize = 12.sp, color = Color.White)
+                    Spacer(modifier = Modifier.width(6.dp))
                     Icon(
-                        modifier = Modifier.size(34.dp),
+                        modifier = Modifier.size(26.dp),
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "app logo",
                         tint = Color.White
                     )
                 }
-                if (!isPlaying.value){
-                    IconButton(modifier = Modifier.align(Alignment.Center), onClick = {}) {
+                if (!isPlaying.value) {
+                    IconButton(
+                        modifier = Modifier.align(Alignment.Center),
+                        onClick = { isPlaying.value = !isPlaying.value }) {
                         Icon(
                             modifier = Modifier.size(42.dp),
                             imageVector = Icons.Default.PlayArrow,
