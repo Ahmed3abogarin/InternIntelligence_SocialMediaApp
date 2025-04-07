@@ -21,7 +21,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.Story
+import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
+import com.ahmed.instagramclone.presentation.details.PostDetails
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
 import com.ahmed.instagramclone.presentation.home.HomeScreen
@@ -36,9 +40,8 @@ import com.ahmed.instagramclone.presentation.reels.ReelsViewModel
 import com.ahmed.instagramclone.presentation.search.SearchScreen
 import com.ahmed.instagramclone.presentation.search.SearchViewModel
 import com.ahmed.instagramclone.presentation.story.StoryCreateScreen
-import com.ahmed.instagramclone.presentation.story.StoryScreen
 import com.ahmed.instagramclone.presentation.story.StoryCreateViewModel
-import com.ahmed.instagramclone.presentation.story.StoryViewModel
+import com.ahmed.instagramclone.presentation.story.StoryScreen
 import com.ahmed.instagramclone.presentation.user.UserScreen
 import com.ahmed.instagramclone.presentation.user.UserViewModel
 
@@ -126,12 +129,25 @@ fun AppNavigatorScreen() {
             composable(Route.HomeScreen.route) {
                 HomeScreen(
                     homeViewmodel.state.value,
-                    navigateToStory = { navController.navigate(Route.StoryCreateScreen.route) })
+                    navigateToStory = { navController.navigate(Route.StoryCreateScreen.route) },
+                    storyState = homeViewmodel.stories.value,
+                    navigateToUserStory = { story ->
+                        navigateToStory2(navController, story)
+
+                    }
+                )
             }
             composable(Route.ExploreScreen.route) {
                 ExploreScreen(
                     state = exploreViewModel.state.value,
-                    navigateToSearch = { navController.navigate(Route.SearchScreen.route) })
+                    navigateToSearch = { navController.navigate(Route.SearchScreen.route) },
+                    navigateToPostDetails = { post -> navigateToPostDetails(navController, post) })
+            }
+            composable(Route.PostDetails.route) {
+                navController.previousBackStackEntry?.savedStateHandle?.get<PostWithAuthor>("post")
+                    ?.let { post ->
+                        PostDetails(post) { navController.navigateUp() }
+                    }
             }
             composable(Route.SearchScreen.route) {
                 SearchScreen(
@@ -153,7 +169,10 @@ fun AppNavigatorScreen() {
                     })
             }
             composable(Route.ProfileScreen.route) {
-                ProfileScreen(state = profileViewModel.state.value!!, posts = profileViewModel.postsState.value)
+                ProfileScreen(
+                    state = profileViewModel.state.value!!,
+                    posts = profileViewModel.postsState.value
+                )
             }
             composable("userScreen/{user_id}") {
                 val userViewModel: UserViewModel = hiltViewModel()
@@ -175,16 +194,34 @@ fun AppNavigatorScreen() {
                 StoryCreateScreen(storyCreateViewModel)
             }
 
-            composable("storyScreen/{user_id}"){
-                val storyViewModel: StoryViewModel = hiltViewModel()
+            composable(Route.StoryScreen.route) {
 
-                StoryScreen(storyViewModel.state.value)
+                val story =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<StoryWithAuthor>("story")
+
+                story?.let {
+                    StoryScreen(
+                        story,
+                        navigateToUser = { id ->
+                            navigateToUserDetails(navController = navController, userId = id)
+                        })
+                }
+
+
+//                StoryScreen(storyViewModel.state.value)
 
             }
         }
     }
 }
-private fun navigateToStory(navController: NavController, userId: String){
+
+private fun navigateToStory2(navController: NavController, story: StoryWithAuthor) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("story", story)
+    navController.navigate(Route.StoryScreen.route)
+
+}
+
+private fun navigateToStory(navController: NavController, userId: String) {
     navController.navigate("storyScreen/$userId")
 
 }
@@ -206,6 +243,14 @@ private fun navigateToTab(navController: NavController, route: String) {
 
 private fun navigateToUserDetails(navController: NavController, userId: String) {
     navController.navigate(route = "userScreen/$userId")
+
+}
+
+private fun navigateToPostDetails(navController: NavController, post: PostWithAuthor) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("post", post)
+    navController.navigate(
+        route = Route.PostDetails.route
+    )
 
 }
 

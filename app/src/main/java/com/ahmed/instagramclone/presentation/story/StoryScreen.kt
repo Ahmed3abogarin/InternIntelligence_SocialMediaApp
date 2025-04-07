@@ -1,44 +1,33 @@
 package com.ahmed.instagramclone.presentation.story
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.ahmed.instagramclone.domain.model.Story
+import androidx.compose.ui.unit.dp
+import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.presentation.components.ReelPlayer
-import com.ahmed.instagramclone.util.Resource
+import com.ahmed.instagramclone.presentation.components.SearchCard
+
 
 @Composable
-fun StoryScreen(state: Resource<List<Story>>?) {
-    val ss = remember { mutableStateOf(false) }
-    when (state) {
-        is Resource.Success -> {
-            state.data?.let {
-                ReelPlayer(state.data[0].videoUrl, ss)
-            }
+fun StoryScreen(story: StoryWithAuthor, navigateToUser: (String) -> Unit) {
+    val isPlaying = remember { mutableStateOf(true) }
+    Box {
+        ReelPlayer(story.story.videoUrl, isPlaying)
+
+        Log.v("COSETTE", story.author.firstName)
+        Row (modifier = Modifier.statusBarsPadding().padding(top = 12.dp)){
 
         }
+        SearchCard(user = story.author, navigateToUser = { navigateToUser(story.author.userId) })
 
-        is Resource.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-
-        is Resource.Error -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Errororororo")
-            }
-        }
-
-        else -> Unit
 
     }
-
 
 }

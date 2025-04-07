@@ -1,6 +1,8 @@
 package com.ahmed.instagramclone.domain.model
 
+import android.os.Parcelable
 import com.google.firebase.Timestamp
+import kotlinx.parcelize.Parcelize
 import java.util.UUID
 
 data class Post(
@@ -21,3 +23,9 @@ data class ReelWithAuthor(
     val post: Reel,
     val author: User
 )
+
+@Parcelize
+data class StoryWithAuthor(
+    val story: Story,
+    val author: User
+): Parcelable

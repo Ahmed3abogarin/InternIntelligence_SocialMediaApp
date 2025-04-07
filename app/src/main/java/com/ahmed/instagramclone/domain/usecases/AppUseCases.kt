@@ -12,5 +12,6 @@ data class AppUseCases(
     val unfollowUser: UnfollowUser,
     val uploadStory: UploadStory,
     val getStory: GetStory,
-    val getUserPosts: GetUserPosts
+    val getUserPosts: GetUserPosts,
+    val getUserStories: GetUserStories
 )

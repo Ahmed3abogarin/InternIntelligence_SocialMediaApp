@@ -1,5 +1,7 @@
 package com.ahmed.instagramclone.presentation.components
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +36,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.Story
+import com.ahmed.instagramclone.domain.model.StoryWithAuthor
+import com.ahmed.instagramclone.util.Resource
 
 @Composable
 fun PostCard(post: PostWithAuthor) {
@@ -56,7 +61,10 @@ fun PostCard(post: PostWithAuthor) {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
-                    Text(text = post.author.firstName +" "+ post.author.lastName  , fontSize = 13.sp)
+                    Text(
+                        text = post.author.firstName + " " + post.author.lastName,
+                        fontSize = 13.sp
+                    )
                     Text(text = post.author.bio, fontSize = 11.sp)
                 }
             }
@@ -114,13 +122,23 @@ fun PostCard(post: PostWithAuthor) {
 
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Text(modifier = Modifier.padding(horizontal = 10.dp), text = post.post.description, fontSize = 13.sp)
+        Text(
+            modifier = Modifier.padding(horizontal = 10.dp),
+            text = post.post.description,
+            fontSize = 13.sp
+        )
     }
 }
 
 
 @Composable
-fun PostsList(posts: List<PostWithAuthor>, navigateToStory : () -> Unit){
+fun PostsList(
+    state: Resource<List<PostWithAuthor>>?,
+    stories: Resource<MutableList<List<StoryWithAuthor>>>?,
+    navigateToStory: () -> Unit,
+    navigateUserToStory: (StoryWithAuthor) -> Unit,
+) {
+    val context = LocalContext.current
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Row(
@@ -154,12 +172,59 @@ fun PostsList(posts: List<PostWithAuthor>, navigateToStory : () -> Unit){
 
             }
             Spacer(modifier = Modifier.height(12.dp))
-            StoryList(navigateToStory = navigateToStory)
+
+            when (stories) {
+                is Resource.Loading -> {
+                    Log.v("STORY", "story is loading")
+                    Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+                }
+
+                is Resource.Success -> {
+                    Log.v("STORY", "story is success")
+                    stories.data?.let {
+                        Log.v("STORYFROMPOSTCARD", it.size.toString())
+                        StoryList(
+                            navigateToAddStory = navigateToStory,
+                            stories = stories.data,
+                            navigateUserToStory = { story ->
+                                navigateUserToStory(story)
+                            }
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    Log.v("STORY", "story is error")
+                    Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
+                }
+
+                else -> Unit
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
         }
-        items(posts){
-            PostCard(it)
-        }
+        when (state) {
+            is Resource.Loading -> {
+                item {
+                    ShimmerEffect()
+                }
 
+            }
+
+            is Resource.Success -> {
+                state.data?.let {
+                    val posts = it
+                    items(posts) { post ->
+                        PostCard(post)
+                    }
+                }
+            }
+
+            is Resource.Error -> {
+                Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
     }
 }

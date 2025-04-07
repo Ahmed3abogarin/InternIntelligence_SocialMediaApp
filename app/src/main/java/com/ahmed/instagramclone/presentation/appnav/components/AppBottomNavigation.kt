@@ -194,6 +194,7 @@ fun AppBottomNavigation(
                     .height(3.dp)
                     .width(indicatorWidth.dp)
                     .clip(CircleShape)
+                    .align(Alignment.CenterHorizontally)
                     .background(indicatorColor)
             )
             AnimatedVisibility(

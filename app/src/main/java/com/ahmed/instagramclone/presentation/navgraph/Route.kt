@@ -16,6 +16,8 @@ sealed class Route(val route: String) {
     data object StoryCreateScreen: Route(route = "storyCreateScreen")
     data object StoryScreen: Route(route = "storyScreen/{user_id}")
 
+    data object PostDetails: Route(route = "postScreen")
+
     data object AppStartNavigation: Route(route = "appLoginScreen")
     data object AppMainNavigation: Route(route = "appMainScreen")
 

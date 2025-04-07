@@ -1,6 +1,7 @@
 package com.ahmed.instagramclone.presentation.explore
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +30,7 @@ import com.ahmed.instagramclone.util.Resource
 fun ExploreScreen(
     state: Resource<List<PostWithAuthor>>?,
     navigateToSearch: () -> Unit,
+    navigateToPostDetails: (PostWithAuthor) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -61,7 +63,10 @@ fun ExploreScreen(
                 items(it) { post ->
                     AsyncImage(
                         model = ImageRequest.Builder(context).data(post.post.image).build(),
-                        modifier = Modifier.height(110.dp).width(100.dp),
+                        modifier = Modifier
+                            .height(110.dp)
+                            .width(100.dp)
+                            .clickable { navigateToPostDetails(post) },
                         contentScale = ContentScale.Crop,
                         contentDescription = "post small image"
                     )

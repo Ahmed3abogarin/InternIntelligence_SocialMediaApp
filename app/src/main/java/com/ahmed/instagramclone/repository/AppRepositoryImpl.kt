@@ -7,6 +7,7 @@ import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.Reel
 import com.ahmed.instagramclone.domain.model.ReelWithAuthor
 import com.ahmed.instagramclone.domain.model.Story
+import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.util.Constants.USER_COLLECTION
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import javax.inject.Inject
@@ -220,7 +222,10 @@ class AppRepositoryImpl @Inject constructor(
 
         try {
             emit(Resource.Loading())
-            val story = Story(downloadUrl)
+            val author = getUser(auth.currentUser!!.uid).filterIsInstance<Resource.Success<User>>()
+                .map { it.data }.catch { emit(User()) }.firstOrNull()
+            val story =
+                Story(username = author!!.firstName + " " + author.lastName, videoUrl = downloadUrl)
             db.collection("Instagram_user").document(auth.currentUser!!.uid).collection("story")
                 .add(story)
             db.collection("Instagram_user").document(auth.currentUser!!.uid)
@@ -253,7 +258,7 @@ class AppRepositoryImpl @Inject constructor(
     override fun getUserPosts(userId: String) = flow {
         emit(Resource.Loading())
 
-        val snapshot = db.collection("posts").whereEqualTo("authorId",userId).get().await()
+        val snapshot = db.collection("posts").whereEqualTo("authorId", userId).get().await()
         val posts = snapshot.toObjects(Post::class.java)
 
         val postsWithAuthors = posts.mapNotNull { post ->
@@ -270,6 +275,54 @@ class AppRepositoryImpl @Inject constructor(
     }.catch { e ->
         Log.v("MYPOSTS", e.message.toString())
         emit(Resource.Error(e.message.toString()))
+    }
+
+    override fun getUserStories() = flow {
+        emit(Resource.Loading())
+        val currentUser = getUser(auth.currentUser!!.uid)
+        val ss = mutableListOf<List<StoryWithAuthor>>()
+
+        try {
+            currentUser.collect {
+                when (it) {
+                    is Resource.Success -> {
+                        it.data?.followers?.forEach { id ->
+                            val ref =
+                                db.collection("Instagram_user").document(id).collection("story")
+                                    .get().await()
+                            val userStory = ref.toObjects(Story::class.java)
+
+
+                            val storyWithAuthor = userStory.mapNotNull { story ->
+                                val author = getUser(story.authorId)
+                                    .filterIsInstance<Resource.Success<User>>()
+                                    .map { it.data }
+                                    .catch { emit(User()) }
+                                    .firstOrNull()
+
+                                StoryWithAuthor(story = story, author = author ?: User())
+                            }
+
+
+                            storyWithAuthor[0].let {
+                                Log.v("STORY", it.toString())
+                            }
+
+                            userStory.let {
+                                ss.add(storyWithAuthor)
+                            }
+                        }
+                        emit(Resource.Success(ss))
+                    }
+
+                    else -> Unit
+                }
+            }
+
+        } catch (e: Exception) {
+            Log.v("StoryUSERS", e.message.toString())
+            emit(Resource.Error(e.message.toString()))
+        }
     }
 
 
