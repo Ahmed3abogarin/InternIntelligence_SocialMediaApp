@@ -46,7 +46,7 @@ import com.ahmed.instagramclone.presentation.home.PostEvent
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
+fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit){
     val context = LocalContext.current
 
     var likes by remember { mutableIntStateOf(post.post.likes.size) }
@@ -105,7 +105,7 @@ fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
-                    onClick = { event(PostEvent.LikePost(post.post.id)) }
+                    onClick = { event(PostEvent.LikeUnlikePost(post.post.id)) }
                 ) {
                     Icon(
                         modifier = Modifier.size(34.dp),
@@ -234,7 +234,7 @@ fun PostsList(
                 state.data?.let {
                     val posts = it
                     items(posts) { post ->
-                        PostCard(post, event = event )
+                        PostCard(post, event = event)
                     }
                 }
             }

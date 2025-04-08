@@ -16,6 +16,7 @@ import com.ahmed.instagramclone.domain.usecases.LikePost
 import com.ahmed.instagramclone.domain.usecases.SearchUser
 import com.ahmed.instagramclone.domain.usecases.SignIn
 import com.ahmed.instagramclone.domain.usecases.UnfollowUser
+import com.ahmed.instagramclone.domain.usecases.UnlikePost
 import com.ahmed.instagramclone.domain.usecases.UploadPost
 import com.ahmed.instagramclone.domain.usecases.UploadStory
 import com.ahmed.instagramclone.repository.AppRepositoryImpl
@@ -75,6 +76,7 @@ object AppModule {
         getStory = GetStory(appRepository),
         getUserPosts = GetUserPosts(appRepository),
         getUserStories = GetUserStories(appRepository),
-        likePost = LikePost(appRepository)
+        likePost = LikePost(appRepository),
+        unlikePost = UnlikePost(appRepository)
     )
 }

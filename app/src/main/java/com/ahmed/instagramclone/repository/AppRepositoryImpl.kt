@@ -349,6 +349,16 @@ class AppRepositoryImpl @Inject constructor(
         emit(Resource.Error(e.message.toString()))
     }
 
+    override fun unlikePost(postId: String) = flow {
+        emit(Resource.Loading())
+        val currentUserRef = db.collection("posts").document(postId)
+        currentUserRef.update("likes",FieldValue.arrayRemove(auth.currentUser!!.uid))
+
+        emit(Resource.Success(Unit))
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
 
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)
