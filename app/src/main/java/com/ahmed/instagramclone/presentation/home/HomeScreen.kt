@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
-import com.ahmed.instagramclone.domain.model.Story
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.presentation.components.PostsList
 import com.ahmed.instagramclone.util.Resource
@@ -17,6 +16,7 @@ fun HomeScreen(
     storyState: Resource<MutableList<List<StoryWithAuthor>>>?,
     navigateToStory: () -> Unit,
     navigateToUserStory: (StoryWithAuthor) -> Unit,
+    event: (PostEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -30,7 +30,8 @@ fun HomeScreen(
             navigateToStory = { navigateToStory() },
             navigateUserToStory = {
                 navigateToUserStory(it)
-            })
+            },
+            event = event )
 
 
     }

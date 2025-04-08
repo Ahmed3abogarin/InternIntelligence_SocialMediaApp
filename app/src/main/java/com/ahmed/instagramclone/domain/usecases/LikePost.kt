@@ -4,11 +4,11 @@ import com.ahmed.instagramclone.domain.repository.AppRepository
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 
-class GetPosts(
-    private val appRepository: AppRepository
+class LikePost(
+    private val appRepository: AppRepository,
 ) {
-    operator fun invoke()= flow {
-        val result =  appRepository.getPosts()
+    operator fun invoke(postId: String) = flow {
+        val result = appRepository.likePost(postId)
         emitAll(result)
     }
 }

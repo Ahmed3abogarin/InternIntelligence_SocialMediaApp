@@ -28,6 +28,23 @@ class HomeViewModel @Inject constructor(
         getStory()
     }
 
+    fun onEvent(event: PostEvent){
+        when(event){
+            is PostEvent.LikePost ->{
+                likePost(event.postId)
+
+            }
+        }
+    }
+
+    private fun likePost(postId: String) {
+        viewModelScope.launch {
+            appUseCases.likePost(postId).collect{
+
+            }
+        }
+    }
+
     private fun getPosts(){
         viewModelScope.launch {
             appUseCases.getPosts().collect{

@@ -13,5 +13,6 @@ data class AppUseCases(
     val uploadStory: UploadStory,
     val getStory: GetStory,
     val getUserPosts: GetUserPosts,
-    val getUserStories: GetUserStories
+    val getUserStories: GetUserStories,
+    val likePost: LikePost
 )

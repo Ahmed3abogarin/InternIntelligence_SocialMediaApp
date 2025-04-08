@@ -21,8 +21,13 @@ import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,13 +41,21 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
-import com.ahmed.instagramclone.domain.model.Story
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
+import com.ahmed.instagramclone.presentation.home.PostEvent
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun PostCard(post: PostWithAuthor) {
+fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
     val context = LocalContext.current
+
+    var likes by remember { mutableIntStateOf(post.post.likes.size) }
+
+    val updatedLikes = post.post.likes.size
+    if (likes != updatedLikes) {
+        likes = updatedLikes
+    }
+
     Column {
         Row(
             modifier = Modifier
@@ -91,12 +104,17 @@ fun PostCard(post: PostWithAuthor) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    modifier = Modifier.size(34.dp),
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = null
-                )
-                Text(text = post.post.likes.size.toString(), fontSize = 12.sp)
+                IconButton(
+                    onClick = { event(PostEvent.LikePost(post.post.id)) }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(34.dp),
+                        imageVector = Icons.Default.FavoriteBorder,
+                        contentDescription = null
+                    )
+                }
+
+                Text(text = likes.toString(), fontSize = 12.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     modifier = Modifier.size(26.dp),
@@ -137,6 +155,7 @@ fun PostsList(
     stories: Resource<MutableList<List<StoryWithAuthor>>>?,
     navigateToStory: () -> Unit,
     navigateUserToStory: (StoryWithAuthor) -> Unit,
+    event: (PostEvent) -> Unit
 ) {
     val context = LocalContext.current
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -215,7 +234,7 @@ fun PostsList(
                 state.data?.let {
                     val posts = it
                     items(posts) { post ->
-                        PostCard(post)
+                        PostCard(post, event = event )
                     }
                 }
             }

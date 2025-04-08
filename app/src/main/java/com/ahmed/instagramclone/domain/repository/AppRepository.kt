@@ -35,4 +35,6 @@ interface AppRepository {
      fun getUserPosts(userId: String): Flow<Resource<List<PostWithAuthor>>>
 
      fun getUserStories(): Flow<Resource<MutableList<List<StoryWithAuthor>>>>
+
+     fun likePost(postId: String): Flow<Resource<Unit>>
 }

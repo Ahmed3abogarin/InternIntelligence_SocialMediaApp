@@ -20,9 +20,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.presentation.components.PostCard
+import com.ahmed.instagramclone.presentation.home.PostEvent
 
 @Composable
-fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit) {
+fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit,event: (PostEvent) -> Unit) {
     Column {
         Row(
             modifier = Modifier
@@ -45,7 +46,7 @@ fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(18.dp))
 
-        PostCard(post = post)
+        PostCard(post = post,event = event)
 
     }
 }

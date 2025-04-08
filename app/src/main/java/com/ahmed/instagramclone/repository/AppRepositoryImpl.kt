@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import javax.inject.Inject
@@ -102,28 +102,41 @@ class AppRepositoryImpl @Inject constructor(
         awaitClose { listener.remove() }
     }
 
-    override fun getPosts() = flow {
-        emit(Resource.Loading())
+    override fun getPosts() = callbackFlow {
+        trySend(Resource.Loading())
 
-        val snapshot = db.collection("posts")
-            .orderBy("timestamp").get().await()
-        val posts = snapshot.toObjects(Post::class.java)
+        val listenerRegistration = db.collection("posts")
+            .orderBy("timestamp")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    trySend(Resource.Error(error.message ?: "Unexpected error"))
+                    return@addSnapshotListener
+                }
 
-        val postsWithAuthors = posts.mapNotNull { post ->
-            val authorFlow = getUser(post.authorId)
-                .filterIsInstance<Resource.Success<User>>()
-                .map { it.data }
-                .catch { emit(User()) }
-                .firstOrNull()
+                val posts = snapshot?.toObjects(Post::class.java)
 
-            PostWithAuthor(post = post, author = authorFlow ?: User())
+                if (posts != null) {
+                    // Launch a coroutine to fetch authors
+                    launch {
+                        val postsWithAuthors = posts.map { post ->
+                            val author = getUser(post.authorId)
+                                .filterIsInstance<Resource.Success<User>>()
+                                .map { it.data }
+                                .catch { emit(User()) }
+                                .firstOrNull() ?: User()
+
+                            PostWithAuthor(post = post, author = author)
+                        }
+                        trySend(Resource.Success(postsWithAuthors))
+                    }
+                }
+            }
+
+        awaitClose {
+            listenerRegistration.remove()
         }
-
-        emit(Resource.Success(postsWithAuthors))
-    }.catch { e ->
-        Log.v("GETPOSTSTOOL", e.message.toString())
-        emit(Resource.Error(e.message.toString()))
     }
+
 
     override fun getReels() = flow {
         emit(Resource.Loading())
@@ -323,6 +336,17 @@ class AppRepositoryImpl @Inject constructor(
             Log.v("StoryUSERS", e.message.toString())
             emit(Resource.Error(e.message.toString()))
         }
+    }
+
+    override fun likePost(postId: String)= flow {
+        emit(Resource.Loading())
+        val currentUserRef = db.collection("posts").document(postId)
+        currentUserRef.update("likes",FieldValue.arrayUnion(auth.currentUser!!.uid))
+
+        emit(Resource.Success(Unit))
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
     }
 
 

@@ -22,7 +22,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
-import com.ahmed.instagramclone.domain.model.Story
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.details.PostDetails
@@ -134,7 +133,8 @@ fun AppNavigatorScreen() {
                     navigateToUserStory = { story ->
                         navigateToStory2(navController, story)
 
-                    }
+                    },
+                    event = homeViewmodel::onEvent
                 )
             }
             composable(Route.ExploreScreen.route) {
@@ -146,7 +146,7 @@ fun AppNavigatorScreen() {
             composable(Route.PostDetails.route) {
                 navController.previousBackStackEntry?.savedStateHandle?.get<PostWithAuthor>("post")
                     ?.let { post ->
-                        PostDetails(post) { navController.navigateUp() }
+                        PostDetails(post, navigateToUp = {navController.navigateUp()}, event = homeViewmodel::onEvent)
                     }
             }
             composable(Route.SearchScreen.route) {
