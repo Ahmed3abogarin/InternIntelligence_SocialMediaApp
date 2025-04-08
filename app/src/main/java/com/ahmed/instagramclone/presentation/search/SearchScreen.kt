@@ -14,12 +14,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.ahmed.instagramclone.domain.model.User
@@ -36,6 +39,12 @@ fun SearchScreen(
     navigateToUser: (User) -> Unit,
 ) {
     val context = LocalContext.current
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
 
     Column(
@@ -59,7 +68,9 @@ fun SearchScreen(
             }
 
             AppSearchBar(
-                modifier = Modifier.padding(start = 6.dp),
+                modifier = Modifier
+                    .padding(start = 6.dp)
+                    .focusRequester(focusRequester),
                 text = text,
                 onValueChange = {
                     text = it
@@ -77,7 +88,7 @@ fun SearchScreen(
 
             is Resource.Success -> {
                 state.data?.let { usersList ->
-                    SearchList(usersList, navigateToUser = {navigateToUser(it)})
+                    SearchList(usersList, navigateToUser = { navigateToUser(it) })
                 }
             }
 
