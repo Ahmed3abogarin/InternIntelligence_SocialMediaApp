@@ -23,7 +23,10 @@ import androidx.navigation.compose.rememberNavController
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
+import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
+import com.ahmed.instagramclone.presentation.chat.ChatScreen
+import com.ahmed.instagramclone.presentation.chat.ChatViewModel
 import com.ahmed.instagramclone.presentation.details.PostDetails
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
@@ -146,7 +149,11 @@ fun AppNavigatorScreen() {
             composable(Route.PostDetails.route) {
                 navController.previousBackStackEntry?.savedStateHandle?.get<PostWithAuthor>("post")
                     ?.let { post ->
-                        PostDetails(post, navigateToUp = {navController.navigateUp()}, event = homeViewmodel::onEvent)
+                        PostDetails(
+                            post,
+                            navigateToUp = { navController.navigateUp() },
+                            event = homeViewmodel::onEvent
+                        )
                     }
             }
             composable(Route.SearchScreen.route) {
@@ -185,6 +192,9 @@ fun AppNavigatorScreen() {
                     event = userViewModel::onEvent,
                     navigateToUserStory = { id ->
                         navigateToStory(navController, id)
+                    },
+                    navigateToChat = { user ->
+                        navigateToChat(navController,user)
                     }
                 )
 
@@ -209,10 +219,23 @@ fun AppNavigatorScreen() {
 
 
 //                StoryScreen(storyViewModel.state.value)
+            }
+
+            composable(Route.ChatScreen.route) {
+                val chatVM: ChatViewModel = hiltViewModel()
+                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")?.let { user ->
+                    ChatScreen(user,chatVM.state.value, event = chatVM::onEvent)
+                }
 
             }
         }
     }
+}
+
+private fun navigateToChat(navController: NavController, user: User ) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+    navController.navigate(route = Route.ChatScreen.route)
+
 }
 
 private fun navigateToStory2(navController: NavController, story: StoryWithAuthor) {

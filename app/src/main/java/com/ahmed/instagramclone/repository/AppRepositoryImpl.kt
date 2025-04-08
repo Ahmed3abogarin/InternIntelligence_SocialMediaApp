@@ -338,10 +338,10 @@ class AppRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun likePost(postId: String)= flow {
+    override fun likePost(postId: String) = flow {
         emit(Resource.Loading())
         val currentUserRef = db.collection("posts").document(postId)
-        currentUserRef.update("likes",FieldValue.arrayUnion(auth.currentUser!!.uid))
+        currentUserRef.update("likes", FieldValue.arrayUnion(auth.currentUser!!.uid))
 
         emit(Resource.Success(Unit))
     }.catch { e ->
@@ -352,7 +352,7 @@ class AppRepositoryImpl @Inject constructor(
     override fun unlikePost(postId: String) = flow {
         emit(Resource.Loading())
         val currentUserRef = db.collection("posts").document(postId)
-        currentUserRef.update("likes",FieldValue.arrayRemove(auth.currentUser!!.uid))
+        currentUserRef.update("likes", FieldValue.arrayRemove(auth.currentUser!!.uid))
 
         emit(Resource.Success(Unit))
     }.catch { e ->

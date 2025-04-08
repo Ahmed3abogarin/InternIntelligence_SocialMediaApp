@@ -68,7 +68,8 @@ fun UserScreen(
     navigateToUp: () -> Unit,
     isFollowing: MutableState<Boolean>,
     event: (UserEvent) -> Unit,
-    navigateToUserStory: (String) -> Unit
+    navigateToUserStory: (String) -> Unit,
+    navigateToChat: (User) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -212,7 +213,9 @@ fun UserScreen(
                         }
                         OutlinedButton(
                             modifier = Modifier.weight(1f),
-                            onClick = {},
+                            onClick = {
+                                navigateToChat(it)
+                            },
                             shape = RoundedCornerShape(8.dp),
                             border = BorderStroke(width = 1.dp, color = Color.Black),
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)

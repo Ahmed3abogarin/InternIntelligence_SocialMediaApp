@@ -18,6 +18,8 @@ sealed class Route(val route: String) {
 
     data object PostDetails: Route(route = "postScreen")
 
+    data object ChatScreen: Route(route = "chatScreen")
+
     data object AppStartNavigation: Route(route = "appLoginScreen")
     data object AppMainNavigation: Route(route = "appMainScreen")
 

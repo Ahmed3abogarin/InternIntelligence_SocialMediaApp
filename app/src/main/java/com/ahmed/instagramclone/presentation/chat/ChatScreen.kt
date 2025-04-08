@@ -1,0 +1,182 @@
+package com.ahmed.instagramclone.presentation.chat
+
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.domain.model.Message
+import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.presentation.components.MessageCard
+import com.ahmed.instagramclone.presentation.components.SearchCard
+import com.ahmed.instagramclone.ui.theme.SendColor
+import com.ahmed.instagramclone.util.Resource
+
+@Composable
+fun ChatScreen(
+    user: User,
+    state: Resource<MutableList<Message>>?,
+    event: (ChatEvent) -> Unit,
+) {
+    var text by remember { mutableStateOf("") }
+
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(false) {
+        event(ChatEvent.GetMessages(user.userId))
+    }
+
+    Column(
+        modifier = Modifier
+            .statusBarsPadding()
+            .padding(top = 4.dp)
+    ) {
+        Row {
+            IconButton(onClick = { }) {
+                Icon(
+                    modifier = Modifier.size(38.dp),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null
+                )
+            }
+            SearchCard(user = user) { }
+        }
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            when (state) {
+                is Resource.Error -> {
+                    Log.v("CHAT", state.message!!)
+
+
+                }
+
+                is Resource.Success -> {
+                    Log.v("CHAT", "chat is successed")
+                    Log.v("CHAT", state.data?.size.toString())
+
+                    if (state.data == null) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "Chat with ${user.firstName} ${user.lastName}")
+                        }
+                    }
+
+                    state.data?.let {
+                        LaunchedEffect(it.size) {
+                            lazyListState.animateScrollToItem(it.lastIndex)
+
+                        }
+                        if (it.isEmpty()) {
+
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = "Chat with ${user.firstName} ${user.lastName}"
+                            )
+
+                        }
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 8.dp),
+                            reverseLayout = true
+                        ) {
+                            items(it.asReversed()) { message ->
+                                MessageCard(
+                                    message = message,
+                                    userImage = "",
+                                    isMine = message.isMine
+                                )
+                            }
+                        }
+
+                    }
+                }
+
+                is Resource.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+                }
+
+                else -> Unit
+            }
+        }
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 2.dp)
+                .clip(CircleShape)
+                .background(Color.LightGray)
+        ) {
+            Row {
+                TextField(
+                    modifier = Modifier.weight(1f),
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = { Text(text = "Message...") },
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    )
+                )
+                IconButton(
+                    modifier = Modifier.align(Alignment.Bottom),
+                    onClick = {
+                        event(ChatEvent.SendMessage(user.userId, message = text))
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(containerColor = SendColor)
+                ) {
+                    Icon(
+                        modifier = Modifier.size(26.dp),
+                        painter = painterResource(R.drawable.ic_send),
+                        tint = Color.White,
+                        contentDescription = "app logo"
+                    )
+                }
+            }
+        }
+    }
+}
+
+
