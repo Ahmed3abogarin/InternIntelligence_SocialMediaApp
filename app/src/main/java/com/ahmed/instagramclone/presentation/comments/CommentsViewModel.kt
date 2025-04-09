@@ -18,6 +18,18 @@ class CommentsViewModel @Inject constructor(
     private val _state = mutableStateOf<Resource<List<CommentWithUser>>?>(null)
     val state = _state
 
+
+    fun onEvent(event: CommentEvent) {
+        when (event) {
+            is CommentEvent.AddComment -> {
+                addComment(postId = event.postId, commentTxt = event.msg)
+            }
+            is CommentEvent.GetComments -> {
+                getComments(postId = event.postId)
+            }
+        }
+    }
+
     fun addComment(postId: String, commentTxt: String) {
         viewModelScope.launch {
             appUseCases.addComment(postId = postId, commentTxt = commentTxt).collect {

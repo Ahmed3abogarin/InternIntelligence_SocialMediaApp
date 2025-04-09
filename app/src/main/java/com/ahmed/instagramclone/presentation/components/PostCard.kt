@@ -134,13 +134,13 @@ fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit, onCommentClicked:
                     )
                 }
 
-                Text(text = "121", fontSize = 12.sp)
+//                Text(text = post.post, fontSize = 12.sp)
                 Icon(
                     modifier = Modifier.size(34.dp),
                     painter = painterResource(R.drawable.ic_send),
                     contentDescription = "app logo"
                 )
-                Text(text = "24", fontSize = 12.sp)
+//                Text(text = "24", fontSize = 12.sp)
             }
 
 
