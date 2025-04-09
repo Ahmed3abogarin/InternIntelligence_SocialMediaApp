@@ -46,7 +46,7 @@ fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit,event: (PostEvent)
         }
         Spacer(modifier = Modifier.height(18.dp))
 
-        PostCard(post = post,event = event)
+        PostCard(post = post,event = event, onCommentClicked = {})
 
     }
 }

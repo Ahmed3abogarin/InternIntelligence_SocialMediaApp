@@ -44,7 +44,7 @@ import com.ahmed.instagramclone.presentation.home.PostEvent
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
+fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit, onCommentClicked: (String) -> Unit) {
     val context = LocalContext.current
 
     var likes by remember { mutableIntStateOf(post.post.likes.size) }
@@ -126,11 +126,14 @@ fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
 
                 Text(text = likes.toString(), fontSize = 12.sp)
                 Spacer(modifier = Modifier.width(4.dp))
-                Icon(
-                    modifier = Modifier.size(26.dp),
-                    painter = painterResource(R.drawable.ic_comment),
-                    contentDescription = null
-                )
+                IconButton(onClick = { onCommentClicked(post.post.id) }) {
+                    Icon(
+                        modifier = Modifier.size(26.dp),
+                        painter = painterResource(R.drawable.ic_comment),
+                        contentDescription = null
+                    )
+                }
+
                 Text(text = "121", fontSize = 12.sp)
                 Icon(
                     modifier = Modifier.size(34.dp),
@@ -165,6 +168,7 @@ fun PostsList(
     stories: Resource<MutableList<List<StoryWithAuthor>>>?,
     navigateToStory: () -> Unit,
     navigateUserToStory: (StoryWithAuthor) -> Unit,
+    onCommentClicked: (String) -> Unit,
     event: (PostEvent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -242,7 +246,7 @@ fun PostsList(
                 state.data?.let {
                     val posts = it
                     items(posts) { post ->
-                        PostCard(post, event = event)
+                        PostCard(post, event = event, onCommentClicked = { id -> onCommentClicked(id) })
                     }
                 }
             }

@@ -3,10 +3,13 @@ package com.ahmed.instagramclone.presentation.appnav
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -27,6 +30,8 @@ import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.chat.ChatScreen
 import com.ahmed.instagramclone.presentation.chat.ChatViewModel
+import com.ahmed.instagramclone.presentation.comments.CommentsScreen
+import com.ahmed.instagramclone.presentation.comments.CommentsViewModel
 import com.ahmed.instagramclone.presentation.details.PostDetails
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
@@ -47,6 +52,7 @@ import com.ahmed.instagramclone.presentation.story.StoryScreen
 import com.ahmed.instagramclone.presentation.user.UserScreen
 import com.ahmed.instagramclone.presentation.user.UserViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigatorScreen() {
     val bottomItems = remember {
@@ -66,6 +72,7 @@ fun AppNavigatorScreen() {
     val reelsViewModel: ReelsViewModel = hiltViewModel()
     val exploreViewModel: ExploreViewModel = hiltViewModel()
     val storyCreateViewModel: StoryCreateViewModel = hiltViewModel()
+    val commentVM: CommentsViewModel = hiltViewModel()
 
 
     val navController = rememberNavController()
@@ -134,12 +141,27 @@ fun AppNavigatorScreen() {
         }
     ) {
         val bottomPadding = it.calculateBottomPadding()
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        var showBottomDialog by remember { mutableStateOf(false) }
+        var postId by remember { mutableStateOf("") }
         NavHost(
             navController = navController,
             startDestination = Route.HomeScreen.route,
             modifier = Modifier.padding(bottom = bottomPadding)
         ) {
+
             composable(Route.HomeScreen.route) {
+
+                if (showBottomDialog && postId.isNotEmpty()) {
+                    CommentsScreen(
+                        state = commentVM.state.value,
+                        postId = postId,
+                        commentsViewModel = commentVM,
+                        sheetState = sheetState,
+                        onDismiss = { showBottomDialog = false })
+
+                }
+
                 HomeScreen(
                     homeViewmodel.state.value,
                     navigateToStory = { navController.navigate(Route.StoryCreateScreen.route) },
@@ -148,7 +170,11 @@ fun AppNavigatorScreen() {
                         navigateToStory2(navController, story)
 
                     },
-                    event = homeViewmodel::onEvent
+                    event = homeViewmodel::onEvent,
+                    onCommentClicked = { id ->
+                        showBottomDialog = true
+                        postId = id
+                    }
                 )
             }
             composable(Route.ExploreScreen.route) {

@@ -16,7 +16,8 @@ fun HomeScreen(
     storyState: Resource<MutableList<List<StoryWithAuthor>>>?,
     navigateToStory: () -> Unit,
     navigateToUserStory: (StoryWithAuthor) -> Unit,
-    event: (PostEvent) -> Unit
+    onCommentClicked: (String) -> Unit,
+    event: (PostEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -31,7 +32,8 @@ fun HomeScreen(
             navigateUserToStory = {
                 navigateToUserStory(it)
             },
-            event = event )
+            event = event,
+            onCommentClicked = { onCommentClicked(it) })
 
 
     }

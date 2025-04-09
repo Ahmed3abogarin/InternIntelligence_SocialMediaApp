@@ -2,6 +2,8 @@ package com.ahmed.instagramclone.repository
 
 import android.net.Uri
 import android.util.Log
+import com.ahmed.instagramclone.domain.model.Comment
+import com.ahmed.instagramclone.domain.model.CommentWithUser
 import com.ahmed.instagramclone.domain.model.Post
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.Reel
@@ -359,6 +361,62 @@ class AppRepositoryImpl @Inject constructor(
         Log.v("GETUSERTOOL", e.message.toString())
         emit(Resource.Error(e.message.toString()))
     }
+
+    override fun commentPost(
+        postId: String,
+        comment: String,
+    ) = flow {
+        emit(Resource.Loading())
+        try {
+            val userComment = Comment(userId = auth.currentUser!!.uid, commentTxt = comment)
+            db.collection("posts").document(postId).collection("comments").add(userComment)
+            emit(Resource.Success(Unit))
+
+        } catch (e: Exception) {
+            Log.v("Comment", e.message.toString())
+            emit(Resource.Error(e.message.toString()))
+
+        }
+    }
+
+    override fun getComments(postId: String): Flow<Resource<List<CommentWithUser>>> = callbackFlow {
+        try {
+            trySend(Resource.Loading())
+
+            val listener = db.collection("posts").document(postId).collection("comments")
+                .addSnapshotListener { value, error ->
+                    if (error != null) {
+                        trySend(Resource.Error(error.message ?: "Unexpected error"))
+                        return@addSnapshotListener
+                    }
+
+                    val comments = value?.toObjects(Comment::class.java) ?: emptyList()
+
+                    launch {
+                        val commentsWithUsers = comments.map { comment ->
+                            val user = getUser(comment.userId)
+                                .firstOrNull {
+                                    it is Resource.Success
+                                }?.let {
+                                    (it as Resource.Success).data
+                                } ?: User() // fallback
+
+                            CommentWithUser(user = user, comment = comment)
+                        }
+
+                        trySend(Resource.Success(commentsWithUsers))
+                    }
+                }
+
+            awaitClose { listener.remove() }
+
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message ?: "Unexpected error"))
+        }
+    }
+
+
+
 
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)

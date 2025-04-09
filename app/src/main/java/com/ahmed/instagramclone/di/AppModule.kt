@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.domain.repository.ChatRepository
+import com.ahmed.instagramclone.domain.usecases.AddComment
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.domain.usecases.CreateNewUser
 import com.ahmed.instagramclone.domain.usecases.FollowUser
+import com.ahmed.instagramclone.domain.usecases.GetComments
 import com.ahmed.instagramclone.domain.usecases.GetPosts
 import com.ahmed.instagramclone.domain.usecases.GetReels
 import com.ahmed.instagramclone.domain.usecases.GetStory
@@ -102,6 +104,8 @@ object AppModule {
         getUserPosts = GetUserPosts(appRepository),
         getUserStories = GetUserStories(appRepository),
         likePost = LikePost(appRepository),
-        unlikePost = UnlikePost(appRepository)
+        unlikePost = UnlikePost(appRepository),
+        addComment = AddComment(appRepository),
+        getComments = GetComments(appRepository)
     )
 }
