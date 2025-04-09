@@ -72,6 +72,7 @@ fun UserScreen(
     event: (UserEvent) -> Unit,
     navigateToUserStory: (String) -> Unit,
     navigateToChat: (User) -> Unit,
+    navigateToFollowers: (List<String>) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
@@ -174,6 +175,7 @@ fun UserScreen(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                                 Text(
+                                    modifier = Modifier.clickable { navigateToFollowers(user.followers) },
                                     text = followers.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -187,6 +189,7 @@ fun UserScreen(
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
+                                    modifier = Modifier.clickable { navigateToFollowers(user.following) },
                                     text = user.following.size.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,

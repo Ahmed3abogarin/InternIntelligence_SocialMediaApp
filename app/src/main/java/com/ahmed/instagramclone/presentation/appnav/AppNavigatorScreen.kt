@@ -27,6 +27,8 @@ import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.presentation.FollowersScreen
+import com.ahmed.instagramclone.presentation.FollowersViewModel
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.chat.ChatScreen
 import com.ahmed.instagramclone.presentation.chat.ChatViewModel
@@ -233,6 +235,10 @@ fun AppNavigatorScreen() {
                     },
                     navigateToChat = { user ->
                         navigateToChat(navController, user)
+                    },
+                    navigateToFollowers = { ids ->
+                        navigateToFollowers(navController, ids)
+
                     }
                 )
 
@@ -273,6 +279,14 @@ fun AppNavigatorScreen() {
                     }
 
             }
+
+            composable("followersScreen/{ids}") {
+                val followersVM: FollowersViewModel = hiltViewModel()
+                FollowersScreen(
+                    state = followersVM.state,
+                    navigateToUser = { userId -> navigateToUserDetails(navController, userId) },
+                    navigateToUp = { navController.navigateUp() })
+            }
         }
     }
 }
@@ -311,6 +325,12 @@ private fun navigateToTab(navController: NavController, route: String) {
 
 private fun navigateToUserDetails(navController: NavController, userId: String) {
     navController.navigate(route = "userScreen/$userId")
+
+}
+
+private fun navigateToFollowers(navController: NavController, idss: List<String>) {
+    val ids = idss.joinToString(",")
+    navController.navigate(route = "followersScreen/$ids")
 
 }
 
