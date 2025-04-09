@@ -1,6 +1,7 @@
 package com.ahmed.instagramclone.presentation.components
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,16 +19,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.Message
+import com.ahmed.instagramclone.ui.theme.Color3
+import com.ahmed.instagramclone.ui.theme.Color4
+import com.ahmed.instagramclone.ui.theme.Color5
+import com.ahmed.instagramclone.ui.theme.Color6
+import com.ahmed.instagramclone.ui.theme.Color7
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
+import com.ahmed.instagramclone.ui.theme.ShimmerColor
 import com.ahmed.instagramclone.util.toFormattedTime
 
 @Composable
@@ -36,21 +46,31 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
     val context = LocalContext.current
 
     val messageColor = if (isMine) {
-        Color.Green
+        listOf(
+            Color7,
+            Color6,
+            Color5,
+            Color4,
+            Color3,
+        )
+
     } else {
-        Color.LightGray
+        listOf(
+            ShimmerColor,
+            ShimmerColor
+        )
     }
 
     val messageShape = if (isMine) {
         RoundedCornerShape(
             topStart = 50.dp,
             bottomStart = 50.dp,
-            bottomEnd = 50.dp
+            bottomEnd = 38.dp
         )
     } else {
         RoundedCornerShape(
             topEnd = 50.dp,
-            bottomStart = 50.dp,
+            bottomStart = 38.dp,
             bottomEnd = 50.dp
         )
     }
@@ -61,15 +81,26 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
     ) {
 
         if (!isMine) {
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(userImage).build(),
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(Color.Red),
-                contentScale = ContentScale.Crop,
-                contentDescription = "user image"
-            )
+            if (userImage.isEmpty()){
+                Image(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(R.drawable.profile_placeholder),
+                    contentDescription = null
+                )
+            }else{
+                AsyncImage(
+                    model = ImageRequest.Builder(context).data(userImage).build(),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color.Red),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "user image"
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.width(7.dp))
@@ -84,12 +115,13 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
             Box(
                 modifier = Modifier
                     .clip(messageShape)
-                    .background(messageColor)
+                    .background(brush = Brush.verticalGradient(messageColor))
             ) {
                 Text(
                     fontSize = 12.sp,
                     modifier = Modifier.padding(start = 13.dp, end = 13.dp, top = 4.dp, bottom = 4.dp),
-                    text = message.messageTxt
+                    text = message.messageTxt,
+                    color = Color.White
                 )
             }
             Text(

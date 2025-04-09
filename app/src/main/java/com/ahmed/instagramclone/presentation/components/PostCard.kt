@@ -2,9 +2,8 @@ package com.ahmed.instagramclone.presentation.components
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,7 +44,7 @@ import com.ahmed.instagramclone.presentation.home.PostEvent
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit){
+fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit) {
     val context = LocalContext.current
 
     var likes by remember { mutableIntStateOf(post.post.likes.size) }
@@ -66,12 +64,24 @@ fun PostCard(post: PostWithAuthor, event: (PostEvent) -> Unit){
         ) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.Cyan)
-                )
+                if (post.author.imagePath.isEmpty()) {
+                    Image(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        painter = painterResource(R.drawable.profile_placeholder),
+                        contentDescription = null
+                    )
+                } else {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context).data(post.post.image).build(),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = null
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
                     Text(
@@ -155,7 +165,7 @@ fun PostsList(
     stories: Resource<MutableList<List<StoryWithAuthor>>>?,
     navigateToStory: () -> Unit,
     navigateUserToStory: (StoryWithAuthor) -> Unit,
-    event: (PostEvent) -> Unit
+    event: (PostEvent) -> Unit,
 ) {
     val context = LocalContext.current
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -199,9 +209,7 @@ fun PostsList(
                 }
 
                 is Resource.Success -> {
-                    Log.v("STORY", "story is success")
                     stories.data?.let {
-                        Log.v("STORYFROMPOSTCARD", it.size.toString())
                         StoryList(
                             navigateToAddStory = navigateToStory,
                             stories = stories.data,

@@ -13,6 +13,16 @@ val Pink40 = Color(0xFF7D5260)
 
 val SendColor = Color(0xFF0D73E0)
 
+val Color1 = Color(0xFFF34F96)
+val Color2 = Color(0xFF5041EF)
+
+val Color3 = Color(0xFF405DE6)
+val Color4 = Color(0xFF5851D8)
+val Color5 = Color(0xFF833AB4)
+val Color6 = Color(0xFFC13584)
+val Color7 = Color(0xFFE1306C)
+
 
 val LikesColor = Color(0xFFc30101)
-val SearchGray = Color(0xFFF5F5F5)
+val ShimmerColor = Color(0xFFDADADA)
+

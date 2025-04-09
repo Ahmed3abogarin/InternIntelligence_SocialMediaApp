@@ -2,6 +2,7 @@ package com.ahmed.instagramclone.presentation.user
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.ProfileTabs
+import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
@@ -69,7 +71,7 @@ fun UserScreen(
     isFollowing: MutableState<Boolean>,
     event: (UserEvent) -> Unit,
     navigateToUserStory: (String) -> Unit,
-    navigateToChat: (User) -> Unit
+    navigateToChat: (User) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
@@ -119,8 +121,8 @@ fun UserScreen(
 
                     Spacer(modifier = Modifier.height(18.dp))
                     Row {
-                        Box (contentAlignment = Alignment.Center){
-                            if (user.hasStory){
+                        Box(contentAlignment = Alignment.Center) {
+                            if (user.hasStory) {
                                 Box(
                                     modifier = Modifier
                                         .clip(CircleShape)
@@ -128,18 +130,31 @@ fun UserScreen(
                                         .background(Brush.radialGradient(colors))
                                 )
                             }
-                            AsyncImage(
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .size(90.dp)
-                                    .background(Color.Black)
-                                    .clickable { if (user.hasStory) navigateToUserStory(user.userId) },
-                                model = ImageRequest.Builder(context).data(context)
-                                    .data(user.imagePath)
-                                    .build(),
-                                contentDescription = "user image",
-                                contentScale = ContentScale.Crop
-                            )
+                            if (user.imagePath.isEmpty()) {
+                                Image(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .size(90.dp)
+                                        .background(Color.Black)
+                                        .clickable { if (user.hasStory) navigateToUserStory(user.userId) },
+                                    painter = painterResource(R.drawable.profile_placeholder),
+                                    contentDescription = "user profile photo"
+                                )
+                            } else {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .size(90.dp)
+                                        .background(Color.Black)
+                                        .clickable { if (user.hasStory) navigateToUserStory(user.userId) },
+                                    model = ImageRequest.Builder(context).data(context)
+                                        .data(user.imagePath)
+                                        .build(),
+                                    contentDescription = "user profile photo",
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
                         }
 
 

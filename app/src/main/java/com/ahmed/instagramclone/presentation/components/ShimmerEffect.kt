@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,7 +42,7 @@ fun Modifier.shimmerEffect() = composed {
 
 @Composable
 fun PostShimmerEffect() {
-    Column{
+    Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -56,8 +57,8 @@ fun PostShimmerEffect() {
             Column {
                 Box(
                     modifier = Modifier
-                        .height(3.dp)
-                        .width(52.dp)
+                        .height(5.dp)
+                        .width(82.dp)
                         .clip(CircleShape)
                         .shimmerEffect()
                 )
@@ -65,8 +66,8 @@ fun PostShimmerEffect() {
 
                 Box(
                     modifier = Modifier
-                        .height(3.dp)
-                        .width(42.dp)
+                        .height(5.dp)
+                        .width(72.dp)
                         .clip(CircleShape)
                         .shimmerEffect()
                 )
@@ -76,16 +77,18 @@ fun PostShimmerEffect() {
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(400.dp)
-            .shimmerEffect())
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+                .shimmerEffect()
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
         Box(
             modifier = Modifier
-                .height(3.dp)
-                .width(200.dp)
+                .height(5.dp)
+                .width(240.dp)
                 .clip(CircleShape)
                 .padding(start = 8.dp)
                 .shimmerEffect()
@@ -95,29 +98,39 @@ fun PostShimmerEffect() {
 
         Box(
             modifier = Modifier
-                .height(3.dp)
-                .width(210.dp)
+                .height(5.dp)
+                .width(250.dp)
                 .clip(CircleShape)
                 .padding(start = 8.dp)
                 .shimmerEffect()
         )
+        Spacer(modifier = Modifier.height(6.dp))
+
     }
 
 
 }
 
 
-
 @Composable
-fun ShimmerEffect(){
-    Column (verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row (modifier = Modifier.padding(start = 7.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)){
-            repeat(6){
-                Box(modifier= Modifier.size(83.dp).clip(CircleShape).shimmerEffect())
+fun ShimmerEffect() {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyRow(
+            userScrollEnabled = false,
+            modifier = Modifier.padding(start = 7.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(6) {
+                Box(modifier = Modifier
+                    .size(83.dp)
+                    .clip(CircleShape)
+                    .shimmerEffect())
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        repeat(4){
+
+        repeat(4) {
             PostShimmerEffect()
         }
 

@@ -41,6 +41,7 @@ import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.components.MessageCard
 import com.ahmed.instagramclone.presentation.components.SearchCard
 import com.ahmed.instagramclone.ui.theme.SendColor
+import com.ahmed.instagramclone.ui.theme.ShimmerColor
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
@@ -48,6 +49,8 @@ fun ChatScreen(
     user: User,
     state: Resource<MutableList<Message>>?,
     event: (ChatEvent) -> Unit,
+    navigateUp: () -> Unit,
+    navigateToUser: (String) -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
 
@@ -63,14 +66,16 @@ fun ChatScreen(
             .padding(top = 4.dp)
     ) {
         Row {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { navigateUp() }) {
                 Icon(
                     modifier = Modifier.size(38.dp),
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = null
                 )
             }
-            SearchCard(user = user) { }
+            SearchCard(user = user) {
+                navigateToUser(user.userId)
+            }
         }
 
 
@@ -145,7 +150,7 @@ fun ChatScreen(
                 .fillMaxWidth()
                 .padding(bottom = 2.dp)
                 .clip(CircleShape)
-                .background(Color.LightGray)
+                .background(ShimmerColor)
         ) {
             Row {
                 TextField(

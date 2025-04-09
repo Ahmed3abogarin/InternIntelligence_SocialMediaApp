@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,12 +22,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
 
@@ -64,22 +67,37 @@ fun SearchCard(user: User, textColor: Color = Color.Black, navigateToUser: () ->
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row {
+            if (user.imagePath.isEmpty()) {
+                Image(
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(R.drawable.profile_placeholder),
+                    contentDescription = null
+                )
+            }else{
+                AsyncImage(
+                    model = ImageRequest.Builder(context).data(user.imagePath).build(),
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "user image"
+                )
+            }
 
-            AsyncImage(
-                model = ImageRequest.Builder(context).data(user.imagePath).build(),
-                modifier = Modifier
-                    .size(65.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                contentDescription = "user image"
-            )
+
 
 
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text(text = user.firstName + "" + user.lastName, fontWeight = FontWeight.SemiBold, color = textColor)
                 Text(
-                    text = user.firstName + "" + user.lastName,
+                    text = user.firstName + " " + user.lastName,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor
+                )
+                Text(
+                    text = user.firstName + " " + user.lastName,
                     fontSize = 13.sp,
                     color = Color.Gray
                 )
@@ -95,6 +113,6 @@ fun SearchCard(user: User, textColor: Color = Color.Black, navigateToUser: () ->
 @Composable
 fun SearchPreview() {
     InstagramCloneTheme {
-        SearchList(listOf(User()), navigateToUser = {})
+        SearchList(listOf(User(firstName = "Ahmed", lastName = "Address")), navigateToUser = {})
     }
 }

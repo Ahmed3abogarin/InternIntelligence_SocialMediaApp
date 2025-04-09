@@ -84,42 +84,53 @@ fun AppNavigatorScreen() {
             else -> selectedItem
         }
     }
+    val isBottomNavVisible = remember(key1 = backStackState) {
+        backStackState?.destination?.route == Route.HomeScreen.route ||
+                backStackState?.destination?.route == Route.ExploreScreen.route ||
+                backStackState?.destination?.route == Route.SearchScreen.route ||
+                backStackState?.destination?.route == Route.NewScreen.route ||
+                backStackState?.destination?.route == Route.ReelsScreen.route ||
+                backStackState?.destination?.route == Route.ProfileScreen.route ||
+                backStackState?.destination?.route == Route.PostDetails.route
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            AppBottomNavigation(
-                items = bottomItems,
-                selectedIndex = selectedItem,
-                onItemClicked = { index ->
-                    when (index) {
-                        0 -> navigateToTab(
-                            navController = navController,
-                            route = Route.HomeScreen.route
-                        )
+            if (isBottomNavVisible) {
+                AppBottomNavigation(
+                    items = bottomItems,
+                    selectedIndex = selectedItem,
+                    onItemClicked = { index ->
+                        when (index) {
+                            0 -> navigateToTab(
+                                navController = navController,
+                                route = Route.HomeScreen.route
+                            )
 
-                        1 -> navigateToTab(
-                            navController = navController,
-                            route = Route.ExploreScreen.route
-                        )
+                            1 -> navigateToTab(
+                                navController = navController,
+                                route = Route.ExploreScreen.route
+                            )
 
-                        2 -> navigateToTab(
-                            navController = navController,
-                            route = Route.NewScreen.route
-                        )
+                            2 -> navigateToTab(
+                                navController = navController,
+                                route = Route.NewScreen.route
+                            )
 
-                        3 -> navigateToTab(
-                            navController = navController,
-                            route = Route.ReelsScreen.route
-                        )
+                            3 -> navigateToTab(
+                                navController = navController,
+                                route = Route.ReelsScreen.route
+                            )
 
-                        4 -> navigateToTab(
-                            navController = navController,
-                            route = Route.ProfileScreen.route
-                        )
+                            4 -> navigateToTab(
+                                navController = navController,
+                                route = Route.ProfileScreen.route
+                            )
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) {
         val bottomPadding = it.calculateBottomPadding()
@@ -194,7 +205,7 @@ fun AppNavigatorScreen() {
                         navigateToStory(navController, id)
                     },
                     navigateToChat = { user ->
-                        navigateToChat(navController,user)
+                        navigateToChat(navController, user)
                     }
                 )
 
@@ -214,7 +225,8 @@ fun AppNavigatorScreen() {
                         story,
                         navigateToUser = { id ->
                             navigateToUserDetails(navController = navController, userId = id)
-                        })
+                        },
+                        navigateToUp = { navController.navigateUp() })
                 }
 
 
@@ -223,16 +235,22 @@ fun AppNavigatorScreen() {
 
             composable(Route.ChatScreen.route) {
                 val chatVM: ChatViewModel = hiltViewModel()
-                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")?.let { user ->
-                    ChatScreen(user,chatVM.state.value, event = chatVM::onEvent)
-                }
+                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+                    ?.let { user ->
+                        ChatScreen(
+                            user,
+                            chatVM.state.value,
+                            event = chatVM::onEvent,
+                            navigateToUser = { id -> navigateToUserDetails(navController, id) },
+                            navigateUp = { navController.navigateUp() })
+                    }
 
             }
         }
     }
 }
 
-private fun navigateToChat(navController: NavController, user: User ) {
+private fun navigateToChat(navController: NavController, user: User) {
     navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
     navController.navigate(route = Route.ChatScreen.route)
 
