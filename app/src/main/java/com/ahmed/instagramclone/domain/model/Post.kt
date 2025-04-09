@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 import java.util.UUID
+@Parcelize
 
 data class Post(
     val id: String = UUID.randomUUID().toString(),
@@ -13,12 +14,13 @@ data class Post(
     val viewCount: Int = 0,
     val likes: List<String> = listOf(),
     val timestamp: Timestamp = Timestamp.now()
-)
+): Parcelable
 
+@Parcelize
 data class PostWithAuthor(
     val post: Post,
     val author: User
-)
+): Parcelable
 data class ReelWithAuthor(
     val post: Reel,
     val author: User

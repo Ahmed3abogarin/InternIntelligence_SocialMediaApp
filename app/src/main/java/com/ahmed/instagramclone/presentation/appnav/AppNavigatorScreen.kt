@@ -215,7 +215,8 @@ fun AppNavigatorScreen() {
             composable(Route.ProfileScreen.route) {
                 ProfileScreen(
                     state = profileViewModel.state.value!!,
-                    posts = profileViewModel.postsState.value
+                    posts = profileViewModel.postsState.value,
+                    navigateToUserStory = {}
                 )
             }
             composable("userScreen/{user_id}") {
