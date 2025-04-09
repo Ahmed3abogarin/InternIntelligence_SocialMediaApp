@@ -25,8 +25,8 @@ import com.ahmed.instagramclone.domain.usecases.UploadStory
 import com.ahmed.instagramclone.domain.usecases.message_usecases.ChatUseCases
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetMessages
 import com.ahmed.instagramclone.domain.usecases.message_usecases.SendMessage
-import com.ahmed.instagramclone.repository.AppRepositoryImpl
-import com.ahmed.instagramclone.repository.ChatRepositoryImpl
+import com.ahmed.instagramclone.data.repository.AppRepositoryImpl
+import com.ahmed.instagramclone.data.repository.ChatRepositoryImpl
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase

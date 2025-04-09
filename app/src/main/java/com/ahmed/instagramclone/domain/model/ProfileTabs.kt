@@ -1,5 +1,6 @@
-package com.ahmed.instagramclone
+package com.ahmed.instagramclone.domain.model
 
+import com.ahmed.instagramclone.R
 
 
 enum class ProfileTabs(
@@ -11,7 +12,7 @@ enum class ProfileTabs(
         selectedIcon = R.drawable.ic_grid_filled,
     ),
     Reels(
-        unselectedIcon =R.drawable.ic_reels ,
+        unselectedIcon = R.drawable.ic_reels,
         selectedIcon = R.drawable.ic_reels_filled,
     ),
     Tags(

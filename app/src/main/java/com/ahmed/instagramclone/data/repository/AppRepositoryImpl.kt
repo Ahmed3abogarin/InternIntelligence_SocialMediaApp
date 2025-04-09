@@ -1,4 +1,4 @@
-package com.ahmed.instagramclone.repository
+package com.ahmed.instagramclone.data.repository
 
 import android.net.Uri
 import android.util.Log
