@@ -3,6 +3,7 @@ package com.ahmed.instagramclone.presentation.components
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -170,6 +171,7 @@ fun PostsList(
     navigateUserToStory: (StoryWithAuthor) -> Unit,
     onCommentClicked: (String) -> Unit,
     event: (PostEvent) -> Unit,
+    navigateToMessages: () -> Unit,
 ) {
     val context = LocalContext.current
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -196,7 +198,9 @@ fun PostsList(
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Icon(
-                        modifier = Modifier.size(36.dp),
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clickable { navigateToMessages() },
                         painter = painterResource(R.drawable.ic_send),
                         contentDescription = "app logo"
                     )
@@ -246,7 +250,10 @@ fun PostsList(
                 state.data?.let {
                     val posts = it
                     items(posts) { post ->
-                        PostCard(post, event = event, onCommentClicked = { id -> onCommentClicked(id) })
+                        PostCard(
+                            post,
+                            event = event,
+                            onCommentClicked = { id -> onCommentClicked(id) })
                     }
                 }
             }

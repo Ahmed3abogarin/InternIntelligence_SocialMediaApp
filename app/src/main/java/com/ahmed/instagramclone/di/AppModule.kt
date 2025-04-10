@@ -27,6 +27,7 @@ import com.ahmed.instagramclone.domain.usecases.message_usecases.GetMessages
 import com.ahmed.instagramclone.domain.usecases.message_usecases.SendMessage
 import com.ahmed.instagramclone.data.repository.AppRepositoryImpl
 import com.ahmed.instagramclone.data.repository.ChatRepositoryImpl
+import com.ahmed.instagramclone.domain.usecases.message_usecases.GetSenders
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -77,14 +78,16 @@ object AppModule {
     @Singleton
     fun provideChatRepository(
         database: FirebaseDatabase,
+        firebaseFireStore: FirebaseFirestore,
         auth: FirebaseAuth,
-    ): ChatRepository = ChatRepositoryImpl(database, auth)
+    ): ChatRepository = ChatRepositoryImpl(firebaseFireStore,database, auth)
 
     @Provides
     @Singleton
     fun provideChatUseCases(chatRepository: ChatRepository) = ChatUseCases(
         sendMessage = SendMessage(chatRepository),
-        getMessages = GetMessages(chatRepository)
+        getMessages = GetMessages(chatRepository),
+        getSenders = GetSenders(chatRepository)
     )
 
     @Provides

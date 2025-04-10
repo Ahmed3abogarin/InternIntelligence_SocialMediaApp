@@ -18,6 +18,7 @@ fun HomeScreen(
     navigateToUserStory: (StoryWithAuthor) -> Unit,
     onCommentClicked: (String) -> Unit,
     event: (PostEvent) -> Unit,
+    navigateToMessages: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -33,7 +34,8 @@ fun HomeScreen(
                 navigateToUserStory(it)
             },
             event = event,
-            onCommentClicked = { onCommentClicked(it) })
+            onCommentClicked = { onCommentClicked(it) },
+            navigateToMessages = { navigateToMessages() })
 
 
     }

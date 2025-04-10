@@ -39,6 +39,8 @@ import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
 import com.ahmed.instagramclone.presentation.home.HomeScreen
 import com.ahmed.instagramclone.presentation.home.HomeViewModel
+import com.ahmed.instagramclone.presentation.messages.MessageViewModel
+import com.ahmed.instagramclone.presentation.messages.MessagesScreen
 import com.ahmed.instagramclone.presentation.navgraph.Route
 import com.ahmed.instagramclone.presentation.new_post.NewPostScreen
 import com.ahmed.instagramclone.presentation.new_post.NewViewModel
@@ -176,6 +178,9 @@ fun AppNavigatorScreen() {
                     onCommentClicked = { id ->
                         showBottomDialog = true
                         postId = id
+                    },
+                    navigateToMessages = {
+                        navController.navigate(Route.MessagesScreen.route)
                     }
                 )
             }
@@ -286,6 +291,14 @@ fun AppNavigatorScreen() {
                     state = followersVM.state,
                     navigateToUser = { userId -> navigateToUserDetails(navController, userId) },
                     navigateToUp = { navController.navigateUp() })
+            }
+
+            composable(Route.MessagesScreen.route) {
+                val messagesVM: MessageViewModel = hiltViewModel()
+                MessagesScreen(
+                    messagesVM.state.value,
+                    navigateToUser = { user -> navigateToChat(navController,user) },
+                    navigateUp = {navController.navigateUp()})
             }
         }
     }

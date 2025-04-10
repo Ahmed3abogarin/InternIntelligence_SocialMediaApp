@@ -2,6 +2,7 @@ package com.ahmed.instagramclone.data.repository
 
 import android.util.Log
 import com.ahmed.instagramclone.domain.model.Message
+import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.repository.ChatRepository
 import com.ahmed.instagramclone.util.Constants.CHAT_REF
 import com.ahmed.instagramclone.util.Resource
@@ -10,11 +11,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ChatRepositoryImpl @Inject constructor(
+    private val db: FirebaseFirestore,
     private val database: FirebaseDatabase,
     private val auth: FirebaseAuth,
 ) : ChatRepository {
@@ -28,21 +33,22 @@ class ChatRepositoryImpl @Inject constructor(
         val msgKey = ref.push().key!!
 
         // send
-        ref.child(chatName).child(msgKey).setValue(sendMessage).addOnSuccessListener {
-            Log.v("CHAT", "chat send successfully")
+        ref.child(chatName).child(senderId).child(msgKey).setValue(sendMessage)
+            .addOnSuccessListener {
+                Log.v("CHAT", "chat send successfully")
 
 
-        }.addOnFailureListener {
-            it.message?.let { msg ->
-                Log.v("CHAT", msg)
+            }.addOnFailureListener {
+                it.message?.let { msg ->
+                    Log.v("CHAT", msg)
+                }
             }
-        }
     }
 
     override fun getMessages(authorId: String) = callbackFlow {
         trySend(Resource.Loading())
         try {
-            val ref = database.getReference(CHAT_REF).child(authorId)
+            val ref = database.getReference(CHAT_REF).child(authorId).child(auth.currentUser!!.uid)
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -77,4 +83,33 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getSenders() = flow {
+        emit(Resource.Loading())
+        val list = mutableListOf<User>()
+
+        try {
+            val reference = database.getReference(CHAT_REF)
+                .child("eD5s9WoDnmgiC6LbBrpkclJeInX2")
+                .get()
+                .await()
+
+            if (reference.exists()) {
+                reference.children.forEach {
+                    val user = db.collection("Instagram_user").document(it.key!!).get().await()
+                        .toObject(User::class.java)
+                    user?.let {
+                        list.add(user)
+                    }
+                }
+            }
+
+            Log.v("TOOL", list.size.toString())
+
+            emit(Resource.Success(list.toList()))
+
+        } catch (e: Exception) {
+            Log.v("TOOL", "Failed to fetch data: ${e.message}")
+            emit(Resource.Error(e.message.toString()))
+        }
+    }
 }
