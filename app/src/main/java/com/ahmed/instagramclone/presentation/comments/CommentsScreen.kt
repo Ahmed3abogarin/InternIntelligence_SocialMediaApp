@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -93,6 +94,11 @@ fun CommentsScreen(
                         Log.v("Comment", "Comment is success")
 
                         state.data?.let {
+                            if (it.isEmpty()){
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                    Text("Start conversation", style = MaterialTheme.typography.headlineMedium)
+                                }
+                            }
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize()

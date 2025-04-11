@@ -66,17 +66,18 @@ fun StoryList(navigateToAddStory : () -> Unit,navigateUserToStory: (StoryWithAut
 
         }
         items(stories) {
-            val story = it[0]
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(
-                    modifier = Modifier
-                        .size(83.dp)
-                        .clip(CircleShape)
-                        .background(brush = Brush.sweepGradient(myColors))
-                        .clickable { navigateUserToStory(story) },
-                    contentAlignment = Alignment.Center
-                ){
-                    StoryThumbnail(videoUrl = story.story.videoUrl)
+            if (it.isNotEmpty()){
+                val story = it[0]
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(
+                        modifier = Modifier
+                            .size(83.dp)
+                            .clip(CircleShape)
+                            .background(brush = Brush.sweepGradient(myColors))
+                            .clickable { navigateUserToStory(story) },
+                        contentAlignment = Alignment.Center
+                    ){
+                        StoryThumbnail(videoUrl = story.story.videoUrl)
 //                    AsyncImage(
 //                        model = ImageRequest.Builder(context).allowConversionToBitmap(true).data(story.videoUrl).build(),
 //                        contentDescription = null,
@@ -85,10 +86,12 @@ fun StoryList(navigateToAddStory : () -> Unit,navigateUserToStory: (StoryWithAut
 //                            .clip(CircleShape)
 //                            .background(Color.Red)
 //                    )
-                }
+                    }
 
-                Text(text = story.story.username, fontSize = 11.sp, overflow = TextOverflow.Ellipsis)
+                    Text(text = story.story.username, fontSize = 11.sp, overflow = TextOverflow.Ellipsis)
+                }
             }
+
 
         }
 
