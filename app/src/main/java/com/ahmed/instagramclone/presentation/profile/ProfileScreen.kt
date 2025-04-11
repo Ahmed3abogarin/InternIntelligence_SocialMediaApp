@@ -95,8 +95,6 @@ fun ProfileScreen(
                         modifier = Modifier
                             .size(91.dp)
                     ) {
-
-                        //////////////
                         if (user.imagePath.isEmpty()) {
                             Image(
                                 modifier = Modifier
@@ -121,10 +119,6 @@ fun ProfileScreen(
                                 contentScale = ContentScale.Crop
                             )
                         }
-
-
-                        /////////////////
-
 
                         Icon(
                             Icons.Default.AddCircle, contentDescription = "", modifier = Modifier
@@ -256,7 +250,18 @@ fun ProfileScreen(
             ) { index ->
                 when (index) {
                     0 -> {
-                        posts?.data?.let {
+                        posts?.data?.let { list ->
+                            if (list.isEmpty()) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "No posts",
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
+                                }
+                            }
                             LazyVerticalStaggeredGrid(
                                 modifier = Modifier
                                     .fillMaxSize(),
@@ -264,7 +269,7 @@ fun ProfileScreen(
                                 verticalItemSpacing = 1.dp,
                                 columns = StaggeredGridCells.Fixed(3),
                             ) {
-                                items(it) { post ->
+                                items(list) { post ->
                                     AsyncImage(
                                         model = ImageRequest.Builder(context).data(post.post.image)
                                             .build(),
@@ -280,29 +285,27 @@ fun ProfileScreen(
                     }
 
                     1 -> {
-                        Box {
-                            Text("gagagagag")
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No Reels")
                         }
                     }
 
                     2 -> {
-                        Box {
-                            Text("oipiip")
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No Tags")
                         }
                     }
 
-                    else -> {
-                        Box {
-                            Text("gagaga97895678gag")
-                        }
-                    }
+                    else -> Unit
                 }
-
-
             }
-
         }
-
     }
 }
 

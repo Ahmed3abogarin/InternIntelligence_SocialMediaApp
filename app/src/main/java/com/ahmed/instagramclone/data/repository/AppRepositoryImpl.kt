@@ -319,9 +319,9 @@ class AppRepositoryImpl @Inject constructor(
                             }
 
 
-                            storyWithAuthor[0].let {
-                                Log.v("STORY", it.toString())
-                            }
+//                            storyWithAuthor[0].let {
+//                                Log.v("STORY", it.toString())
+//                            }
 
                             userStory.let {
                                 ss.add(storyWithAuthor)

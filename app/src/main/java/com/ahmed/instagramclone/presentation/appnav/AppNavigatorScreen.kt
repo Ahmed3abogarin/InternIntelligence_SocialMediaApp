@@ -359,5 +359,5 @@ data class BottomNavigationItem(
     @DrawableRes val icon: Int,
     val color: Color,
     val size: IntSize = IntSize(0, 0),
-    val offset: Offset = Offset(0f, 0f),
+    val offset: Offset = Offset(32f, 0f),
 )

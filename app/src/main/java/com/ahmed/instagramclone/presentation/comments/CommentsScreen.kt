@@ -106,12 +106,16 @@ fun CommentsScreen(
                         }
                     }
                     is Resource.Loading -> {
-                        CircularProgressIndicator()
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                            CircularProgressIndicator(color = Color.LightGray, strokeWidth = 1.dp)
+                        }
+
                     }
                     is Resource.Error -> {
-                        Text(text = state.message.toString())
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                            Text(text = state.message.toString())
+                        }
                     }
-
                     else -> Unit
                 }
 
