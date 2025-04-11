@@ -25,21 +25,21 @@ class ChatRepositoryImpl @Inject constructor(
 ) : ChatRepository {
     override fun sendMessage(receiverId: String, message: String) {
         val ref = database.getReference(CHAT_REF)
+        val senderId = auth.currentUser!!.uid
 //        val senderId = auth.currentUser!!.uid
         val sendMessage = Message(
-            senderId = receiverId,
+            senderId = senderId,
             messageTxt = message
         )
 
 
         val msgKey = ref.push().key!!
 
-        val senderId = auth.currentUser!!.uid
 
         val chatId = if (senderId < receiverId) {
             "${senderId}_${receiverId}"
         } else {
-            "${receiverId}_${receiverId}"
+            "${receiverId}_${senderId}"
         }
 
 
