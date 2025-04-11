@@ -1,7 +1,5 @@
 package com.ahmed.instagramclone.di
 
-import android.app.Application
-import android.content.Context
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.domain.repository.ChatRepository
 import com.ahmed.instagramclone.domain.usecases.AddComment
@@ -43,10 +41,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton

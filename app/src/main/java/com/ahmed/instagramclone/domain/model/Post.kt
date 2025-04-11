@@ -3,11 +3,11 @@ package com.ahmed.instagramclone.domain.model
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
-import java.util.UUID
-@Parcelize
 
+
+@Parcelize
 data class Post(
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = "",
     val authorId: String = "",
     val image: String = "",
     val description: String = "",

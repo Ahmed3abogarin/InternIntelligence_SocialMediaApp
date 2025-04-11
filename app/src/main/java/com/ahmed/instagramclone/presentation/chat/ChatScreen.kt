@@ -136,7 +136,7 @@ fun ChatScreen(
                 }
 
                 is Resource.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Color.LightGray, strokeWidth = 1.5.dp)
 
                 }
 

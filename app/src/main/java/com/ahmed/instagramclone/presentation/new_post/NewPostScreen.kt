@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -28,15 +29,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.ahmed.instagramclone.ui.theme.Color3
 import com.ahmed.instagramclone.ui.theme.Color4
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
 fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
     val context = LocalContext.current
+
+    var isEnabled by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
 
     when (state) {
         is Resource.Loading -> {
@@ -58,6 +64,10 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
 
     var image by remember { mutableStateOf<Uri?>(null) }
 
+    if (image != null) {
+        isEnabled = true
+    }
+
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -75,11 +85,14 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
             .statusBarsPadding()
             .padding(top = 3.dp)
     ) {
+        Text(modifier = Modifier.padding(start = 12.dp, top = 4.dp), text = "New post", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(6.dp))
         image?.let {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(410.dp),
+                contentScale = ContentScale.FillBounds,
                 painter = rememberAsyncImagePainter(it),
                 contentDescription = null
             )
@@ -89,8 +102,8 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
                 .fillMaxWidth()
                 .padding(6.dp),
             placeholder = { Text(text = "Description") },
-            value = "",
-            onValueChange = {},
+            value = text,
+            onValueChange = { text = it },
             minLines = 10,
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
@@ -105,12 +118,13 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
         ) {
 
             Button(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color3),
                 onClick = {
                     launcher.launch("image/*")
                 }) {
@@ -119,9 +133,10 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
             Button(
                 modifier = Modifier
                     .weight(1f),
+                enabled = isEnabled,
                 onClick = {
                     if (image != null) {
-                        event(NewPostEvent.UploadPost(image!!))
+                        event(NewPostEvent.UploadPost(image!!, description = text))
                     } else {
                         Toast.makeText(context, "Choose an image", Toast.LENGTH_SHORT).show()
                     }
@@ -129,7 +144,7 @@ fun NewPostScreen(state: Resource<Unit>?, event: (NewPostEvent) -> Unit) {
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color4)
             ) {
-                Text(text = "Upload post")
+                Text(text = "Share post")
             }
         }
     }

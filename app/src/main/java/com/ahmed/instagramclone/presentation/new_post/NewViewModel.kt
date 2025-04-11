@@ -1,5 +1,6 @@
 package com.ahmed.instagramclone.presentation.new_post
 
+import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NewViewModel @Inject constructor(
     private val appUseCases: AppUseCases,
-    private val context: Context,
+    private val application: Application
 ) : ViewModel() {
 
     private val _state = mutableStateOf<Resource<Unit>?>(null)
@@ -27,9 +28,9 @@ class NewViewModel @Inject constructor(
     fun onEvent(event: NewPostEvent) {
         when (event) {
             is NewPostEvent.UploadPost -> {
-                val byteArray = getImageByteArray(context = context, imageUri = event.imageUri)
+                val byteArray = getImageByteArray(context = application, imageUri = event.imageUri)
                 uploadPost(
-                    description = "This is a test description",
+                    description = event.description,
                     byteArray = byteArray
                 )
             }

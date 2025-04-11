@@ -172,6 +172,7 @@ class AppRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
 
             val post = Post(
+                id = id,
                 authorId = auth.currentUser!!.uid,
                 image = downloadUrl,
                 description = description,
@@ -311,13 +312,12 @@ class AppRepositoryImpl @Inject constructor(
                             val storyWithAuthor = userStory.mapNotNull { story ->
                                 val author = getUser(story.authorId)
                                     .filterIsInstance<Resource.Success<User>>()
-                                    .map { it.data }
+                                    .map { user -> user.data }
                                     .catch { emit(User()) }
                                     .firstOrNull()
 
                                 StoryWithAuthor(story = story, author = author ?: User())
                             }
-
 
 //                            storyWithAuthor[0].let {
 //                                Log.v("STORY", it.toString())

@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -31,10 +32,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.Message
-import com.ahmed.instagramclone.ui.theme.Color3
 import com.ahmed.instagramclone.ui.theme.Color4
-import com.ahmed.instagramclone.ui.theme.Color5
-import com.ahmed.instagramclone.ui.theme.Color6
 import com.ahmed.instagramclone.ui.theme.Color7
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
 import com.ahmed.instagramclone.ui.theme.ShimmerColor
@@ -48,10 +46,8 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
     val messageColor = if (isMine) {
         listOf(
             Color7,
-            Color6,
-            Color5,
-            Color4,
-            Color3,
+            Color4
+//            Color3,
         )
 
     } else {
@@ -65,12 +61,12 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
         RoundedCornerShape(
             topStart = 50.dp,
             bottomStart = 50.dp,
-            bottomEnd = 38.dp
+            bottomEnd = 25.dp
         )
     } else {
         RoundedCornerShape(
             topEnd = 50.dp,
-            bottomStart = 38.dp,
+            bottomStart = 25.dp,
             bottomEnd = 50.dp
         )
     }
@@ -115,7 +111,7 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
             Box(
                 modifier = Modifier
                     .clip(messageShape)
-                    .background(brush = Brush.verticalGradient(messageColor))
+                    .background(brush = Brush.sweepGradient(messageColor, center = Offset.Infinite))
             ) {
                 Text(
                     fontSize = 12.sp,
