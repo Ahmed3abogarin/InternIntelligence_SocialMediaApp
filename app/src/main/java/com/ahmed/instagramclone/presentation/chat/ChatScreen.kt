@@ -169,6 +169,7 @@ fun ChatScreen(
                     modifier = Modifier.align(Alignment.Bottom),
                     onClick = {
                         event(ChatEvent.SendMessage(user.userId, message = text))
+                        text = ""
                     },
                     colors = IconButtonDefaults.iconButtonColors(containerColor = SendColor)
                 ) {

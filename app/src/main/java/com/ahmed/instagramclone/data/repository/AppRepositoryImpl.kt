@@ -342,6 +342,7 @@ class AppRepositoryImpl @Inject constructor(
 
     override fun likePost(postId: String) = flow {
         emit(Resource.Loading())
+        Log.v("COSEETE",postId)
         val currentUserRef = db.collection("posts").document(postId)
         currentUserRef.update("likes", FieldValue.arrayUnion(auth.currentUser!!.uid))
 
