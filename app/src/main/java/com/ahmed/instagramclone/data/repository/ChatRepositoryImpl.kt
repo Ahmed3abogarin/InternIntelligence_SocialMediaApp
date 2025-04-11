@@ -23,32 +23,66 @@ class ChatRepositoryImpl @Inject constructor(
     private val database: FirebaseDatabase,
     private val auth: FirebaseAuth,
 ) : ChatRepository {
-    override fun sendMessage(chatName: String, message: String) {
+    override fun sendMessage(receiverId: String, message: String) {
         val ref = database.getReference(CHAT_REF)
-        val senderId = auth.currentUser!!.uid
+//        val senderId = auth.currentUser!!.uid
         val sendMessage = Message(
-            senderId = senderId,
+            senderId = receiverId,
             messageTxt = message
         )
+
+
         val msgKey = ref.push().key!!
 
-        // send
-        ref.child(chatName).child(senderId).child(msgKey).setValue(sendMessage)
+        val senderId = auth.currentUser!!.uid
+
+        val chatId = if (senderId < receiverId) {
+            "${senderId}_${receiverId}"
+        } else {
+            "${receiverId}_${receiverId}"
+        }
+
+
+        ref.child(chatId).child(msgKey).setValue(sendMessage)
             .addOnSuccessListener {
                 Log.v("CHAT", "chat send successfully")
-
-
             }.addOnFailureListener {
+                Log.v("CHAT", "is failed")
+
+                it.message?.let { msg ->
+                    Log.v("CHAT", msg)
+                }
+            }
+
+
+        // Add the sender to receiver chat list
+
+        ref.child("UserChats").child(senderId).child(receiverId).setValue(message)
+            .addOnSuccessListener {
+                Log.v("CHAT", "chat send successfully")
+            }.addOnFailureListener {
+                Log.v("CHAT", "is failed")
+
                 it.message?.let { msg ->
                     Log.v("CHAT", msg)
                 }
             }
     }
 
-    override fun getMessages(authorId: String) = callbackFlow {
+    override fun getMessages(senderId: String) = callbackFlow {
         trySend(Resource.Loading())
         try {
-            val ref = database.getReference(CHAT_REF).child(authorId).child(auth.currentUser!!.uid)
+
+            val receiverId = auth.currentUser!!.uid
+
+
+            val chatId = if (receiverId > senderId) {
+                "${senderId}_${receiverId}"
+            } else {
+                "${receiverId}_${senderId}"
+            }
+
+            val ref = database.getReference(CHAT_REF).child(chatId)
 
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -86,12 +120,13 @@ class ChatRepositoryImpl @Inject constructor(
     override fun getSenders() = flow {
         emit(Resource.Loading())
         val list = mutableListOf<User>()
-
         try {
-            val reference = database.getReference(CHAT_REF)
-                .child("eD5s9WoDnmgiC6LbBrpkclJeInX2")
-                .get()
-                .await()
+
+
+            val reference =
+                database.getReference(CHAT_REF).child("UserChats").child(auth.currentUser!!.uid)
+                    .get()
+                    .await()
 
             if (reference.exists()) {
                 reference.children.forEach {

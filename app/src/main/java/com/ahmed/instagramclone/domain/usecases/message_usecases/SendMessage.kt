@@ -6,6 +6,6 @@ class SendMessage(
     private val chatRepository: ChatRepository,
 ) {
     operator fun invoke(chatName: String, message: String) {
-        chatRepository.sendMessage(chatName = chatName, message = message)
+        chatRepository.sendMessage(receiverId = chatName, message = message)
     }
 }
