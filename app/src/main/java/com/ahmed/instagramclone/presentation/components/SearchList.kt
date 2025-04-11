@@ -108,6 +108,61 @@ fun SearchCard(user: User, textColor: Color = Color.Black, navigateToUser: () ->
 
 }
 
+@Composable
+fun SearchCard(user: User, textColor: Color = Color.Black, messageTxt: String, navigateToUser: () -> Unit) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                navigateToUser()
+            }
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row {
+            if (user.imagePath.isEmpty()) {
+                Image(
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape),
+                    painter = painterResource(R.drawable.profile_placeholder),
+                    contentDescription = null
+                )
+            }else{
+                AsyncImage(
+                    model = ImageRequest.Builder(context).data(user.imagePath).build(),
+                    modifier = Modifier
+                        .size(65.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = "user image"
+                )
+            }
+
+
+
+
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = user.firstName + " " + user.lastName,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor
+                )
+                Text(
+                    text = messageTxt,
+                    fontSize = 13.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+
+    }
+
+}
+
 
 @Preview(showBackground = true)
 @Composable

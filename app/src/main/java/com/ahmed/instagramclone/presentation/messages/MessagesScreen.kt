@@ -22,21 +22,24 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ahmed.instagramclone.domain.model.Message
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.presentation.components.SearchCard
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
 fun MessagesScreen(
+    message: Resource<Message>?,
     state: Resource<List<User>>?,
     navigateToUser: (User) -> Unit,
     navigateUp: () -> Unit,
+    messageViewModel: MessageViewModel
 ) {
-
     Column(
         modifier = Modifier
             .statusBarsPadding()
@@ -67,10 +70,17 @@ fun MessagesScreen(
                         modifier = Modifier.padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        items(it) {
-                            SearchCard(user = it) {
-                                navigateToUser(it)
+                        items(it) { user ->
+                            LaunchedEffect (false){
+                                messageViewModel.getLastMessage(user.userId)
                             }
+                            message?.data?.let { message ->
+                                SearchCard(user = user, messageTxt = message.messageTxt) {
+                                    navigateToUser(user)
+                                }
+                            }
+
+
                         }
                     }
                 }

@@ -147,4 +147,50 @@ class ChatRepositoryImpl @Inject constructor(
             emit(Resource.Error(e.message.toString()))
         }
     }
+
+    override fun getLastMessage(senderId: String)= callbackFlow {
+        trySend(Resource.Loading())
+        try {
+
+            val receiverId = auth.currentUser!!.uid
+
+
+            val chatId = if (receiverId > senderId) {
+                "${senderId}_${receiverId}"
+            } else {
+                "${receiverId}_${senderId}"
+            }
+
+            val ref = database.getReference(CHAT_REF).child(chatId)
+
+            val listener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val message = snapshot.children.last().getValue(Message::class.java)
+                    message?.let {
+                        val msg = it.copy(isMine = it.senderId == auth.currentUser!!.uid)
+
+                        trySend(Resource.Success(msg))
+                    }
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    trySend(Resource.Error(error.message))
+                    close(error.toException())
+                }
+            }
+
+            // Attach listener
+            ref.addValueEventListener(listener)
+
+            // Clean up when flow collector is cancelled
+            awaitClose {
+                ref.removeEventListener(listener)
+            }
+
+        } catch (e: Exception) {
+            trySend(Resource.Error(e.message ?: "Unknown error"))
+            close(e)
+        }
+    }
 }

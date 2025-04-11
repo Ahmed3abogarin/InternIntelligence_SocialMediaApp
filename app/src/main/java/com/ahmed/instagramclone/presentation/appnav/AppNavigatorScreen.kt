@@ -296,9 +296,11 @@ fun AppNavigatorScreen() {
             composable(Route.MessagesScreen.route) {
                 val messagesVM: MessageViewModel = hiltViewModel()
                 MessagesScreen(
-                    messagesVM.state.value,
-                    navigateToUser = { user -> navigateToChat(navController,user) },
-                    navigateUp = {navController.navigateUp()})
+                    messageViewModel = messagesVM,
+                    message = messagesVM.lastMessage.value,
+                    state = messagesVM.state.value,
+                    navigateToUser = { user -> navigateToChat(navController, user) },
+                    navigateUp = { navController.navigateUp() })
             }
         }
     }

@@ -10,4 +10,5 @@ interface ChatRepository {
     fun getMessages(senderId: String): Flow<Resource<MutableList<Message>>>
 
     fun getSenders(): Flow<Resource<List<User>>>
+    fun getLastMessage(senderId: String): Flow<Resource<Message>>
 }

@@ -25,6 +25,7 @@ import com.ahmed.instagramclone.domain.usecases.message_usecases.GetMessages
 import com.ahmed.instagramclone.domain.usecases.message_usecases.SendMessage
 import com.ahmed.instagramclone.data.repository.AppRepositoryImpl
 import com.ahmed.instagramclone.data.repository.ChatRepositoryImpl
+import com.ahmed.instagramclone.domain.usecases.message_usecases.GetLastMessage
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetSenders
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -81,7 +82,8 @@ object AppModule {
     fun provideChatUseCases(chatRepository: ChatRepository) = ChatUseCases(
         sendMessage = SendMessage(chatRepository),
         getMessages = GetMessages(chatRepository),
-        getSenders = GetSenders(chatRepository)
+        getSenders = GetSenders(chatRepository),
+        getLastMessage = GetLastMessage(chatRepository)
     )
 
     @Provides
