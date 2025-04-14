@@ -1,4 +1,4 @@
-package com.ahmed.instagramclone.presentation
+package com.ahmed.instagramclone.presentation.followers
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle

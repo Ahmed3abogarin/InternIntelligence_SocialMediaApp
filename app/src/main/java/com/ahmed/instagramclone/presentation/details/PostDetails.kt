@@ -24,7 +24,7 @@ import com.ahmed.instagramclone.presentation.components.PostCard
 import com.ahmed.instagramclone.presentation.home.PostEvent
 
 @Composable
-fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit,event: (PostEvent) -> Unit) {
+fun PostDetails(post: PostWithAuthor,currentUserId: String, navigateToUp: () -> Unit,event: (PostEvent) -> Unit) {
     Column {
         Row(
             modifier = Modifier
@@ -48,7 +48,7 @@ fun PostDetails(post: PostWithAuthor,navigateToUp: () -> Unit,event: (PostEvent)
         }
         Spacer(modifier = Modifier.height(18.dp))
 
-        PostCard(post = post,event = event, onCommentClicked = {})
+        PostCard(post = post,event = event, currentUserId = currentUserId, onCommentClicked = {})
 
     }
 }

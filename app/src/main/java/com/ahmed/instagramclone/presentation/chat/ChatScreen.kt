@@ -2,14 +2,17 @@ package com.ahmed.instagramclone.presentation.chat
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -51,6 +55,7 @@ fun ChatScreen(
     event: (ChatEvent) -> Unit,
     navigateUp: () -> Unit,
     navigateToUser: (String) -> Unit,
+    showToast: () -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
 
@@ -65,7 +70,7 @@ fun ChatScreen(
             .statusBarsPadding()
             .padding(top = 4.dp)
     ) {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { navigateUp() }) {
                 Icon(
                     modifier = Modifier.size(38.dp),
@@ -73,9 +78,30 @@ fun ChatScreen(
                     contentDescription = null
                 )
             }
-            SearchCard(user = user) {
+            SearchCard(user = user, modifier = Modifier.weight(1f)) {
                 navigateToUser(user.userId)
             }
+
+            Icon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .rotate(90f)
+                    .clickable { showToast() },
+                painter = painterResource(R.drawable.ic_call),
+                contentDescription = "call icon"
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Icon(
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable { showToast() },
+                painter = painterResource(R.drawable.ic_video),
+                contentDescription = "call icon"
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
         }
 
 
@@ -126,7 +152,7 @@ fun ChatScreen(
                             items(it.asReversed()) { message ->
                                 MessageCard(
                                     message = message,
-                                    userImage = "",
+                                    userImage = user.imagePath,
                                     isMine = message.isMine
                                 )
                             }
@@ -136,7 +162,11 @@ fun ChatScreen(
                 }
 
                 is Resource.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Color.LightGray, strokeWidth = 1.5.dp)
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.LightGray,
+                        strokeWidth = 1.5.dp
+                    )
 
                 }
 
@@ -148,7 +178,8 @@ fun ChatScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 2.dp)
+                .padding(6.dp)
+                .padding(bottom = 4.dp)
                 .clip(CircleShape)
                 .background(ShimmerColor)
         ) {
@@ -166,7 +197,7 @@ fun ChatScreen(
                     )
                 )
                 IconButton(
-                    modifier = Modifier.align(Alignment.Bottom),
+                    modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
                         event(ChatEvent.SendMessage(user.userId, message = text))
                         text = ""

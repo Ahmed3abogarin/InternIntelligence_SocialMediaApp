@@ -1,6 +1,10 @@
 package com.ahmed.instagramclone.presentation.appnav
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -27,8 +32,8 @@ import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.domain.model.User
-import com.ahmed.instagramclone.presentation.FollowersScreen
-import com.ahmed.instagramclone.presentation.FollowersViewModel
+import com.ahmed.instagramclone.presentation.followers.FollowersScreen
+import com.ahmed.instagramclone.presentation.followers.FollowersViewModel
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.chat.ChatScreen
 import com.ahmed.instagramclone.presentation.chat.ChatViewModel
@@ -79,6 +84,7 @@ fun AppNavigatorScreen() {
     val commentVM: CommentsViewModel = hiltViewModel()
 
 
+    val context = LocalContext.current
     val navController = rememberNavController()
     val backStackState = navController.currentBackStackEntryAsState().value
     var selectedItem by rememberSaveable {
@@ -174,6 +180,7 @@ fun AppNavigatorScreen() {
                         navigateToStory2(navController, story)
 
                     },
+                    currentUserId = homeViewmodel.currentUserId,
                     event = homeViewmodel::onEvent,
                     onCommentClicked = { id ->
                         showBottomDialog = true
@@ -196,6 +203,7 @@ fun AppNavigatorScreen() {
                         PostDetails(
                             post,
                             navigateToUp = { navController.navigateUp() },
+                            currentUserId = homeViewmodel.currentUserId,
                             event = homeViewmodel::onEvent
                         )
                     }
@@ -271,7 +279,33 @@ fun AppNavigatorScreen() {
 //                StoryScreen(storyViewModel.state.value)
             }
 
-            composable(Route.ChatScreen.route) {
+            composable(
+                Route.ChatScreen.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { x -> x }, // Enter from right
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { x -> -x }, // Exit to left
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { x -> -x }, // Back-enter from left
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { x ->  x }, // Back-exit to right
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                }
+            ) {
                 val chatVM: ChatViewModel = hiltViewModel()
                 navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
                     ?.let { user ->
@@ -280,7 +314,14 @@ fun AppNavigatorScreen() {
                             chatVM.state.value,
                             event = chatVM::onEvent,
                             navigateToUser = { id -> navigateToUserDetails(navController, id) },
-                            navigateUp = { navController.navigateUp() })
+                            navigateUp = { navController.navigateUp() },
+                            showToast = {
+                                Toast.makeText(
+                                    context,
+                                    "This feature is not available yet",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            })
                     }
 
             }
@@ -293,7 +334,33 @@ fun AppNavigatorScreen() {
                     navigateToUp = { navController.navigateUp() })
             }
 
-            composable(Route.MessagesScreen.route) {
+            composable(
+                Route.MessagesScreen.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { x -> x }, // Enter from right
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { x -> x }, // Exit to left
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { x -> -x }, // Back-enter from left
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { x-> x }, // Back-exit to right
+                        animationSpec = tween(durationMillis = 600)
+                    )
+                }
+            ) {
                 val messagesVM: MessageViewModel = hiltViewModel()
                 MessagesScreen(
                     messageViewModel = messagesVM,

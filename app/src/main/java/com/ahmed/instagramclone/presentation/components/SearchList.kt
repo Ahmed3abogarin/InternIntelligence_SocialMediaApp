@@ -47,17 +47,17 @@ fun SearchList(users: List<User>, navigateToUser: (User) -> Unit) {
             )
         }
         items(users) {
-            SearchCard(it, navigateToUser = { navigateToUser(it) })
+            SearchCard(user = it, navigateToUser = { navigateToUser(it) })
         }
     }
 }
 
 
 @Composable
-fun SearchCard(user: User, textColor: Color = Color.Black, navigateToUser: () -> Unit) {
+fun SearchCard(modifier: Modifier =Modifier,user: User, textColor: Color = Color.Black, navigateToUser: () -> Unit) {
     val context = LocalContext.current
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable {
                 navigateToUser()

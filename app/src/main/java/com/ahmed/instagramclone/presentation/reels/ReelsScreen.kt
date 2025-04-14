@@ -59,7 +59,7 @@ fun ReelsScreen(state: Resource<List<ReelWithAuthor>>?, navigateToUser: (User) -
                         .navigationBarsPadding()
                 ) {
                     SearchCard(
-                        reel.author,
+                        user = reel.author,
                         textColor = Color.White,
                         navigateToUser = { navigateToUser(reel.author) })
                 }

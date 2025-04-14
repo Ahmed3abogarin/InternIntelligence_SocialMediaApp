@@ -24,6 +24,8 @@ class HomeViewModel @Inject constructor(
     private val _stories = mutableStateOf<Resource<MutableList<List<StoryWithAuthor>>>?>(null)
     val stories = _stories
 
+    val currentUserId = auth.currentUser!!.uid
+
 
     init {
         getPosts()
@@ -39,6 +41,7 @@ class HomeViewModel @Inject constructor(
                     likePost(event.postId)
                 }
             }
+
         }
     }
 

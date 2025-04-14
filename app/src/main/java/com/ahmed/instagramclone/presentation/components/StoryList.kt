@@ -24,14 +24,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
+import com.ahmed.instagramclone.ui.theme.Color7
 
 
 @Composable
 fun StoryList(navigateToAddStory : () -> Unit,navigateUserToStory: (StoryWithAuthor) -> Unit, stories: MutableList<List<StoryWithAuthor>>){
     val myColors = listOf(
-        Color.Cyan,
+        Color7,
         Color.Yellow
-//        Color(0xFFff1554)
+//            Color3,
     )
 
 
@@ -71,9 +72,9 @@ fun StoryList(navigateToAddStory : () -> Unit,navigateUserToStory: (StoryWithAut
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
                         modifier = Modifier
-                            .size(83.dp)
+                            .size(86.dp)
                             .clip(CircleShape)
-                            .background(brush = Brush.sweepGradient(myColors))
+                            .background(brush = Brush.linearGradient(myColors))
                             .clickable { navigateUserToStory(story) },
                         contentAlignment = Alignment.Center
                     ){

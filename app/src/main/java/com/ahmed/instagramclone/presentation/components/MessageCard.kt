@@ -59,14 +59,16 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
 
     val messageShape = if (isMine) {
         RoundedCornerShape(
+            topEnd = 50.dp,
             topStart = 50.dp,
             bottomStart = 50.dp,
-            bottomEnd = 25.dp
+            bottomEnd = 50.dp
         )
     } else {
         RoundedCornerShape(
+            topStart =50.dp,
             topEnd = 50.dp,
-            bottomStart = 25.dp,
+            bottomStart = 50.dp,
             bottomEnd = 50.dp
         )
     }
@@ -104,7 +106,7 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
             modifier = Modifier
                 .padding(
                     end = if (!isMine) 60.dp else 1.dp,
-                    top = if (!isMine) 30.dp else 0.dp,
+                    top = if (!isMine) 15.dp else 0.dp,
                     start = if (isMine) 60.dp else 1.dp
                 )
         ) {

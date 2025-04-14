@@ -1,5 +1,8 @@
 package com.ahmed.instagramclone.presentation.navgraph
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -32,7 +35,20 @@ fun NavGraph(startDestination: String) {
                     state = loginViewModel.state.value
                 )
             }
-            composable(route = Route.SignUpScreen.route) {
+            composable(route = Route.SignUpScreen.route,
+                enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { -it },
+                        animationSpec = tween(600)
+                    )
+                },
+                exitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(600)
+                    )
+                }
+            ) {
                 SignUpScreen(
                     navigateUp = { navController.navigateUp() },
                     navigateToMain = { navController.navigate(Route.AppMainNavigation.route) })
