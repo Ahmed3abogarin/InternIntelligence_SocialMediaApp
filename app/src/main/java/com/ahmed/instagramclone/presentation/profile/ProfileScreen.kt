@@ -66,6 +66,7 @@ fun ProfileScreen(
     state: Resource<User?>,
     posts: Resource<List<PostWithAuthor>>?,
     navigateToUserStory: (String) -> Unit,
+    navigateToEdit: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -112,9 +113,7 @@ fun ProfileScreen(
                                     .size(90.dp)
                                     .background(Color.Black)
                                     .clickable { if (user.hasStory) navigateToUserStory(user.userId) },
-                                model = ImageRequest.Builder(context).data(context)
-                                    .data(user.imagePath)
-                                    .build(),
+                                model = ImageRequest.Builder(context).data(user.imagePath).build(),
                                 contentDescription = "user profile photo",
                                 contentScale = ContentScale.Crop
                             )
@@ -169,7 +168,7 @@ fun ProfileScreen(
                 ) {
                     OutlinedButton(
                         modifier = Modifier.weight(1f),
-                        onClick = {},
+                        onClick = {navigateToEdit()},
                         shape = RoundedCornerShape(8.dp),
                         border = BorderStroke(width = 1.dp, color = Color.Black),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)

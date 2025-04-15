@@ -43,4 +43,8 @@ interface AppRepository {
     fun commentPost(postId: String, comment: String): Flow<Resource<Unit>>
 
     fun getComments(postId: String): Flow<Resource<List<CommentWithUser>>>
+
+    fun saveUserInfo(user: User,shouldRetrieveOldImage: Boolean): Flow<Resource<Unit>>
+
+    fun saveUserInfoWithNewImage(user: User, byteArray: ByteArray): Flow<Resource<Unit>>
 }

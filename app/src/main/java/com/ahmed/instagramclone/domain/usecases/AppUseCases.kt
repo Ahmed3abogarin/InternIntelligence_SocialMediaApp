@@ -17,5 +17,7 @@ data class AppUseCases(
     val likePost: LikePost,
     val unlikePost: UnlikePost,
     val addComment: AddComment,
-    val getComments: GetComments
+    val getComments: GetComments,
+    val saveUser: SaveUser,
+    val saveUserWithNewImage: SaveUserWithNewImage
 )

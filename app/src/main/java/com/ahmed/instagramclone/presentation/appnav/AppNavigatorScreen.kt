@@ -32,16 +32,18 @@ import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.domain.model.User
-import com.ahmed.instagramclone.presentation.followers.FollowersScreen
-import com.ahmed.instagramclone.presentation.followers.FollowersViewModel
 import com.ahmed.instagramclone.presentation.appnav.components.AppBottomNavigation
 import com.ahmed.instagramclone.presentation.chat.ChatScreen
 import com.ahmed.instagramclone.presentation.chat.ChatViewModel
 import com.ahmed.instagramclone.presentation.comments.CommentsScreen
 import com.ahmed.instagramclone.presentation.comments.CommentsViewModel
 import com.ahmed.instagramclone.presentation.details.PostDetails
+import com.ahmed.instagramclone.presentation.edit.EditScreen
+import com.ahmed.instagramclone.presentation.edit.EditViewModel
 import com.ahmed.instagramclone.presentation.explore.ExploreScreen
 import com.ahmed.instagramclone.presentation.explore.ExploreViewModel
+import com.ahmed.instagramclone.presentation.followers.FollowersScreen
+import com.ahmed.instagramclone.presentation.followers.FollowersViewModel
 import com.ahmed.instagramclone.presentation.home.HomeScreen
 import com.ahmed.instagramclone.presentation.home.HomeViewModel
 import com.ahmed.instagramclone.presentation.messages.MessageViewModel
@@ -231,7 +233,8 @@ fun AppNavigatorScreen() {
                 ProfileScreen(
                     state = profileViewModel.state.value!!,
                     posts = profileViewModel.postsState.value,
-                    navigateToUserStory = {}
+                    navigateToUserStory = {},
+                    navigateToEdit = { navController.navigate(Route.EditInfoScreen.route) }
                 )
             }
             composable("userScreen/{user_id}") {
@@ -241,6 +244,7 @@ fun AppNavigatorScreen() {
                 UserScreen(
                     isFollowing = userViewModel.isFollowing,
                     state = userViewModel.state.value,
+                    posts = userViewModel.postsState.value,
                     navigateToUp = { navController.navigateUp() },
                     event = userViewModel::onEvent,
                     navigateToUserStory = { id ->
@@ -252,6 +256,9 @@ fun AppNavigatorScreen() {
                     navigateToFollowers = { ids ->
                         navigateToFollowers(navController, ids)
 
+                    },
+                    navigateToDetails = {post ->
+                        navigateToPostDetails(navController,post)
                     }
                 )
 
@@ -301,7 +308,7 @@ fun AppNavigatorScreen() {
                 },
                 popExitTransition = {
                     slideOutHorizontally(
-                        targetOffsetX = { x ->  x }, // Back-exit to right
+                        targetOffsetX = { x -> x }, // Back-exit to right
                         animationSpec = tween(durationMillis = 600)
                     )
                 }
@@ -356,7 +363,7 @@ fun AppNavigatorScreen() {
                 },
                 popExitTransition = {
                     slideOutHorizontally(
-                        targetOffsetX = { x-> x }, // Back-exit to right
+                        targetOffsetX = { x -> x }, // Back-exit to right
                         animationSpec = tween(durationMillis = 600)
                     )
                 }
@@ -368,6 +375,16 @@ fun AppNavigatorScreen() {
                     state = messagesVM.state.value,
                     navigateToUser = { user -> navigateToChat(navController, user) },
                     navigateUp = { navController.navigateUp() })
+            }
+
+            composable(Route.EditInfoScreen.route) {
+                val editVM: EditViewModel = hiltViewModel()
+                EditScreen(
+                    state = editVM.state.value,
+                    updateState = editVM.updateState.value,
+                    event = editVM::onEvent,
+                    navigateUp = { navController.navigateUp() }
+                )
             }
         }
     }

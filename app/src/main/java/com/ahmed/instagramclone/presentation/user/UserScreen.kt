@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -60,6 +63,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
@@ -67,12 +71,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserScreen(
     state: Resource<User?>?,
+    posts: Resource<List<PostWithAuthor>>?,
     navigateToUp: () -> Unit,
     isFollowing: MutableState<Boolean>,
     event: (UserEvent) -> Unit,
     navigateToUserStory: (String) -> Unit,
     navigateToChat: (User) -> Unit,
     navigateToFollowers: (List<String>) -> Unit,
+    navigateToDetails: (PostWithAuthor) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -306,13 +312,56 @@ fun UserScreen(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            val pageText = when (it) {
-                                0 -> "Your posts"
-                                1 -> "Your reels"
-                                2 -> "Your tags"
-                                else -> ""
+                            when (it) {
+                                0 -> {
+                                    posts?.data?.let { list ->
+                                        if (list.isEmpty()) {
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = "No posts",
+                                                    style = MaterialTheme.typography.titleSmall
+                                                )
+                                            }
+                                        }
+                                        LazyVerticalStaggeredGrid(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            horizontalArrangement = Arrangement.spacedBy(1.dp),
+                                            verticalItemSpacing = 1.dp,
+                                            columns = StaggeredGridCells.Fixed(3),
+                                        ) {
+                                            items(list) { post ->
+                                                AsyncImage(
+                                                    model = ImageRequest.Builder(context).data(post.post.image)
+                                                        .build(),
+                                                    modifier = Modifier
+                                                        .height(200.dp)
+                                                        .width(205.dp)
+                                                        .clickable { navigateToDetails(post) },
+                                                    contentScale = ContentScale.FillBounds,
+                                                    contentDescription = "user account post image"
+                                                )
+                                            }
+                                        }
+                                    }
+
+                                }
+                                1 -> {
+                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                        Text(text = "No Reels")
+                                    }
+
+                                }
+                                2 -> {
+                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                        Text(text = "No Tags")
+                                    }
+                                }
+                                else -> Unit
                             }
-                            Text(text = pageText)
                         }
 
                     }

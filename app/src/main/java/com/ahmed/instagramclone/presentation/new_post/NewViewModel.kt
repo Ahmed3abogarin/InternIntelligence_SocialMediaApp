@@ -1,18 +1,14 @@
 package com.ahmed.instagramclone.presentation.new_post
 
 import android.app.Application
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.util.Resource
+import com.ahmed.instagramclone.util.getImageByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
@@ -49,17 +45,4 @@ class NewViewModel @Inject constructor(
         }
 
     }
-
-    private fun getImageByteArray(context: Context, imageUri: Uri): ByteArray {
-        val stream = ByteArrayOutputStream()
-
-        val source = ImageDecoder.createSource(context.contentResolver, imageUri)
-        val imageBmp = ImageDecoder.decodeBitmap(source)
-
-        imageBmp.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-
-        return stream.toByteArray()
-    }
-
-
 }

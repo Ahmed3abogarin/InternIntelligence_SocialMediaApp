@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
 import com.ahmed.instagramclone.util.Resource
@@ -24,12 +25,16 @@ class UserViewModel @Inject constructor(
     private val _state = mutableStateOf<Resource<User?>?>(null)
     val state = _state
 
+    private val _postsState = mutableStateOf<Resource<List<PostWithAuthor>>?>(null)
+    val postsState = _postsState
+
     private val _isFollowing = mutableStateOf(false)
     val isFollowing = _isFollowing
 
     init {
         savedStateHandle.get<String>("user_id")?.let {
             getUser(it)
+            getUserPosts(it)
         }
     }
 
@@ -52,6 +57,14 @@ class UserViewModel @Inject constructor(
                     // unfollow with same button
                     followUser(user.userId)
                 }
+            }
+        }
+    }
+
+    private fun getUserPosts(userId: String){
+        viewModelScope.launch {
+            appUseCases.getUserPosts(userId).collectLatest {
+                _postsState.value = it
             }
         }
     }

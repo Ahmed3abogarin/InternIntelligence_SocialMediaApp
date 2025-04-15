@@ -100,7 +100,7 @@ fun PostCard(
                     )
                 } else {
                     AsyncImage(
-                        model = ImageRequest.Builder(context).data(post.post.image).build(),
+                        model = ImageRequest.Builder(context).data(post.author.imagePath).build(),
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape),

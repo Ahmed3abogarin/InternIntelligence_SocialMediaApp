@@ -415,8 +415,42 @@ class AppRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun saveUserInfo(user: User, shouldRetrieveOldImage: Boolean) = flow {
+        emit(Resource.Loading())
+        db.runTransaction { transaction ->
+
+            val documentRef = db.collection("Instagram_user").document(auth.currentUser!!.uid)
 
 
+            if (shouldRetrieveOldImage) {
+                val oldUser = transaction.get(documentRef).toObject(User::class.java)
+                val updatedUser = user.copy(imagePath = oldUser?.imagePath ?: "")
+                transaction.update(documentRef,"","")
+                transaction.set(documentRef, updatedUser)
+            } else {
+                transaction.set(documentRef, user)
+            }
+
+        }
+
+        emit(Resource.Success(Unit))
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
+
+    override fun saveUserInfoWithNewImage(user: User, byteArray: ByteArray) = flow {
+        emit(Resource.Loading())
+
+        val imageDirectory = storage.reference.child("profileImages/${auth.uid}/${UUID.randomUUID()}")
+        val result = imageDirectory.putBytes(byteArray).await() // await: gonna suspend this function
+        val imageUrl = result.storage.downloadUrl.await().toString()
+        saveUserInfo(user = user.copy(imagePath = imageUrl), shouldRetrieveOldImage = false).collect{emit(it)}
+
+    }.catch { e ->
+        Log.v("GETUSERTOOL", e.message.toString())
+        emit(Resource.Error(e.message.toString()))
+    }
 
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)

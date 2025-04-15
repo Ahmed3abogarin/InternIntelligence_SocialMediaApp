@@ -25,6 +25,8 @@ import com.ahmed.instagramclone.domain.usecases.message_usecases.GetMessages
 import com.ahmed.instagramclone.domain.usecases.message_usecases.SendMessage
 import com.ahmed.instagramclone.data.repository.AppRepositoryImpl
 import com.ahmed.instagramclone.data.repository.ChatRepositoryImpl
+import com.ahmed.instagramclone.domain.usecases.SaveUser
+import com.ahmed.instagramclone.domain.usecases.SaveUserWithNewImage
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetLastMessage
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetSenders
 import com.google.firebase.Firebase
@@ -105,6 +107,8 @@ object AppModule {
         likePost = LikePost(appRepository),
         unlikePost = UnlikePost(appRepository),
         addComment = AddComment(appRepository),
-        getComments = GetComments(appRepository)
+        getComments = GetComments(appRepository),
+        saveUser = SaveUser(appRepository),
+        saveUserWithNewImage = SaveUserWithNewImage(appRepository)
     )
 }
