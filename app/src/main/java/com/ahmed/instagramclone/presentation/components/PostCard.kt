@@ -237,7 +237,7 @@ fun DoubleTapAnimation(
         AsyncImage(
             model = ImageRequest.Builder(context).data(imageUrl).build(),
             contentDescription = "post image",
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(410.dp)

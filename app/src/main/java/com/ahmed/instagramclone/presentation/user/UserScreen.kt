@@ -65,6 +65,7 @@ import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.ui.theme.SendColor
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
 
@@ -230,10 +231,9 @@ fun UserScreen(
                                 event(UserEvent.FollowUnfollowUser)
                             },
                             shape = RoundedCornerShape(8.dp),
-                            border = BorderStroke(width = 1.dp, color = Color.Black),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Blue)
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = SendColor)
                         ) {
-                            Text(text = if (isFollowing.value) "Following" else "Follow")
+                            Text(text = if (isFollowing.value) "Following" else "Follow",color= Color.White)
                         }
                         OutlinedButton(
                             modifier = Modifier.weight(1f),
@@ -341,7 +341,7 @@ fun UserScreen(
                                                         .height(200.dp)
                                                         .width(205.dp)
                                                         .clickable { navigateToDetails(post) },
-                                                    contentScale = ContentScale.FillBounds,
+                                                    contentScale = ContentScale.Fit,
                                                     contentDescription = "user account post image"
                                                 )
                                             }

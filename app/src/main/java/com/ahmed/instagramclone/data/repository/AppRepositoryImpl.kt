@@ -179,7 +179,7 @@ class AppRepositoryImpl @Inject constructor(
             )
 
 
-            db.collection("posts").add(post)
+            db.collection("posts").document(id).set(post)
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error(e.message.toString()))
@@ -241,7 +241,7 @@ class AppRepositoryImpl @Inject constructor(
             val author = getUser(auth.currentUser!!.uid).filterIsInstance<Resource.Success<User>>()
                 .map { it.data }.catch { emit(User()) }.firstOrNull()
             val story =
-                Story(username = author!!.firstName + " " + author.lastName, videoUrl = downloadUrl)
+                Story(authorId = auth.currentUser!!.uid, username = author!!.firstName + " " + author.lastName, videoUrl = downloadUrl)
             db.collection("Instagram_user").document(auth.currentUser!!.uid).collection("story")
                 .add(story)
             db.collection("Instagram_user").document(auth.currentUser!!.uid)
@@ -383,7 +383,7 @@ class AppRepositoryImpl @Inject constructor(
         try {
             trySend(Resource.Loading())
 
-            val listener = db.collection("posts").document(postId).collection("comments")
+            val listener = db.collection("posts").document(postId).collection("comments").orderBy("time")
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         trySend(Resource.Error(error.message ?: "Unexpected error"))
@@ -455,7 +455,7 @@ class AppRepositoryImpl @Inject constructor(
     private fun saveUserInfo(uid: String, user: User) {
         db.collection(USER_COLLECTION)
             .document(uid)
-            .set(user)
+            .set(user.copy(userId = uid))
 //            .addOnSuccessListener {
 //                // Success >>>>>>>>
 //            }

@@ -53,9 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
@@ -162,13 +162,14 @@ fun ProfileScreen(
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
+                Text(modifier = Modifier.padding(8.dp), text = user.bio)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     OutlinedButton(
                         modifier = Modifier.weight(1f),
-                        onClick = {navigateToEdit()},
+                        onClick = { navigateToEdit() },
                         shape = RoundedCornerShape(8.dp),
                         border = BorderStroke(width = 1.dp, color = Color.Black),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Black)

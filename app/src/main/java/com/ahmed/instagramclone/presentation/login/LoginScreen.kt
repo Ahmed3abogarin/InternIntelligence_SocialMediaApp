@@ -39,33 +39,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmed.instagramclone.R
+import com.ahmed.instagramclone.presentation.components.AppLoading
 import com.ahmed.instagramclone.util.Resource
 
 @Composable
-fun LoginScreen(state: Resource<Unit>?, navigateToRegister: () -> Unit, event: (LoginEvent) -> Unit, navigateToMain: () -> Unit) {
+fun LoginScreen(
+    state: Resource<Unit>?,
+    navigateToRegister: () -> Unit,
+    event: (LoginEvent) -> Unit,
+    navigateToMain: () -> Unit,
+) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    when (state) {
-        is Resource.Loading -> {
-            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-        }
 
-        is Resource.Success -> {
-            Toast.makeText(context, "You passes", Toast.LENGTH_SHORT).show()
-            navigateToMain()
-        }
-
-        is Resource.Error -> {
-            Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
-        }
-
-        else -> Unit
-    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -143,6 +135,7 @@ fun LoginScreen(state: Resource<Unit>?, navigateToRegister: () -> Unit, event: (
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(14.dp)),
                 value = password,
                 placeholder = { Text(text = "***********") },
+                visualTransformation = PasswordVisualTransformation(),
                 onValueChange = { password = it.trim() },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
@@ -245,14 +238,20 @@ fun LoginScreen(state: Resource<Unit>?, navigateToRegister: () -> Unit, event: (
             )
         }
     }
+    when (state) {
+        is Resource.Loading -> {
+            AppLoading()
+        }
+
+        is Resource.Success -> {
+            navigateToMain()
+        }
+
+        is Resource.Error -> {
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+        }
+
+        else -> Unit
+    }
 
 }
-
-//@Preview
-//@Composable
-//fun LoginPreview() {
-//    val navController = reme
-//    InstagramCloneTheme {
-//        LoginScreen()
-//    }
-//}

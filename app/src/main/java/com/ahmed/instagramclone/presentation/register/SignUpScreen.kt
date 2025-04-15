@@ -51,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.presentation.components.AppLoading
 
 @Composable
 fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
@@ -69,23 +70,6 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
     if (fieldState.passwordState != null || fieldState.emailState != null) {
         Toast.makeText(context, "Check your inputs", Toast.LENGTH_SHORT).show()
     }
-    when (state) {
-        is Resource.Loading -> {
-            Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
-        }
-
-        is Resource.Success -> {
-            Toast.makeText(context, "You passes", Toast.LENGTH_SHORT).show()
-            navigateToMain()
-        }
-
-        is Resource.Error -> {
-            Toast.makeText(context, "Error !!!", Toast.LENGTH_SHORT).show()
-        }
-
-        else -> Unit
-    }
-
 
     Box(
         modifier = Modifier
@@ -267,6 +251,7 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
                 value = confirmPassword,
                 placeholder = { Text(text = "********") },
                 onValueChange = { confirmPassword = it },
+                visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.White,
                     focusedContainerColor = Color.White,
@@ -290,7 +275,7 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
                 onClick = {
                     viewModel.createNewUser(
                         user =
-                            User(firstName = firstName, lastName = lastName, email = email),
+                            User(firstName = firstName.trim(), lastName = lastName.trim(), email = email.trim()),
                         password = password,
                         confirmPassword = confirmPassword
 
@@ -315,6 +300,20 @@ fun SignUpScreen(navigateUp: () -> Unit, navigateToMain: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium
             )
         }
+    }
+
+    when (state) {
+        is Resource.Loading -> {
+            AppLoading()
+        }
+        is Resource.Success -> {
+            navigateToMain()
+        }
+        is Resource.Error -> {
+            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+        }
+
+        else -> Unit
     }
 
 }
