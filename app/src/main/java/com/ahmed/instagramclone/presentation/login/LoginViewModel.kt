@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmed.instagramclone.util.Resource
-import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.authUsecases.AuthUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val appUseCases: AppUseCases,
+    private val authUseCases: AuthUseCases
 ) : ViewModel() {
 
     private val _state = mutableStateOf<Resource<Unit>?>(null)
@@ -30,7 +30,7 @@ class LoginViewModel @Inject constructor(
 
     private fun signInUser(email: String, password: String) {
         viewModelScope.launch {
-            appUseCases.signIn(email = email, password = password).collect {
+            authUseCases.signIn(email = email, password = password).collect {
                 _state.value = it
             }
         }

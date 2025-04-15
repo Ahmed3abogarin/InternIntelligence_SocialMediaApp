@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.posts_usecases.PostUseCases
 import com.ahmed.instagramclone.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val appUseCases: AppUseCases
+    private val appUseCases: AppUseCases,
+    private val postUseCases: PostUseCases
 ): ViewModel() {
 
     private val _state = mutableStateOf<Resource<User?>?>(null)
@@ -40,7 +42,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun getPosts(){
         viewModelScope.launch {
-            appUseCases.getUserPosts(auth.currentUser!!.uid).collect{
+            postUseCases.getUserPosts(auth.currentUser!!.uid).collect{
                 _postsState.value = it
             }
         }

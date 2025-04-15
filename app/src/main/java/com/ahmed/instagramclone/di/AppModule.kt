@@ -2,31 +2,27 @@ package com.ahmed.instagramclone.di
 
 import com.ahmed.instagramclone.domain.repository.AppRepository
 import com.ahmed.instagramclone.domain.repository.ChatRepository
-import com.ahmed.instagramclone.domain.usecases.AddComment
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
-import com.ahmed.instagramclone.domain.usecases.CreateNewUser
+import com.ahmed.instagramclone.domain.usecases.authUsecases.Register
 import com.ahmed.instagramclone.domain.usecases.FollowUser
-import com.ahmed.instagramclone.domain.usecases.GetComments
-import com.ahmed.instagramclone.domain.usecases.GetPosts
 import com.ahmed.instagramclone.domain.usecases.GetReels
 import com.ahmed.instagramclone.domain.usecases.GetStory
 import com.ahmed.instagramclone.domain.usecases.GetUser
-import com.ahmed.instagramclone.domain.usecases.GetUserPosts
 import com.ahmed.instagramclone.domain.usecases.GetUserStories
-import com.ahmed.instagramclone.domain.usecases.LikePost
 import com.ahmed.instagramclone.domain.usecases.SearchUser
-import com.ahmed.instagramclone.domain.usecases.SignIn
+import com.ahmed.instagramclone.domain.usecases.authUsecases.SignIn
 import com.ahmed.instagramclone.domain.usecases.UnfollowUser
-import com.ahmed.instagramclone.domain.usecases.UnlikePost
-import com.ahmed.instagramclone.domain.usecases.UploadPost
 import com.ahmed.instagramclone.domain.usecases.UploadStory
 import com.ahmed.instagramclone.domain.usecases.message_usecases.ChatUseCases
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetMessages
 import com.ahmed.instagramclone.domain.usecases.message_usecases.SendMessage
 import com.ahmed.instagramclone.data.repository.AppRepositoryImpl
+import com.ahmed.instagramclone.data.repository.AuthRepositoryImpl
 import com.ahmed.instagramclone.data.repository.ChatRepositoryImpl
+import com.ahmed.instagramclone.domain.repository.AuthRepository
 import com.ahmed.instagramclone.domain.usecases.SaveUser
 import com.ahmed.instagramclone.domain.usecases.SaveUserWithNewImage
+import com.ahmed.instagramclone.domain.usecases.authUsecases.AuthUseCases
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetLastMessage
 import com.ahmed.instagramclone.domain.usecases.message_usecases.GetSenders
 import com.google.firebase.Firebase
@@ -61,6 +57,14 @@ object AppModule {
     @Singleton
     fun provideFirebaseDatabase() = FirebaseDatabase.getInstance()
 
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        auth: FirebaseAuth,
+        firebaseFireStore: FirebaseFirestore,
+    ): AuthRepository = AuthRepositoryImpl(auth,firebaseFireStore)
+
     @Provides
     @Singleton
     fun provideAppRepository(
@@ -71,6 +75,7 @@ object AppModule {
             : AppRepository = AppRepositoryImpl(auth, firebaseFireStore, storage)
 
 
+
     @Provides
     @Singleton
     fun provideChatRepository(
@@ -78,6 +83,13 @@ object AppModule {
         firebaseFireStore: FirebaseFirestore,
         auth: FirebaseAuth,
     ): ChatRepository = ChatRepositoryImpl(firebaseFireStore,database, auth)
+
+    @Provides
+    @Singleton
+    fun provideAuthUseCases(authRepository: AuthRepository)= AuthUseCases(
+        createNewUser = Register(authRepository),
+        signIn = SignIn(authRepository)
+    )
 
     @Provides
     @Singleton
@@ -91,23 +103,14 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAppUseCases(appRepository: AppRepository) = AppUseCases(
-        createNewUser = CreateNewUser(appRepository),
-        signIn = SignIn(appRepository),
         searchUser = SearchUser(appRepository),
-        getPosts = GetPosts(appRepository),
-        uploadPost = UploadPost(appRepository),
         getUser = GetUser(appRepository),
         getReels = GetReels(appRepository),
         followUser = FollowUser(appRepository),
         unfollowUser = UnfollowUser(appRepository),
         uploadStory = UploadStory(appRepository),
         getStory = GetStory(appRepository),
-        getUserPosts = GetUserPosts(appRepository),
         getUserStories = GetUserStories(appRepository),
-        likePost = LikePost(appRepository),
-        unlikePost = UnlikePost(appRepository),
-        addComment = AddComment(appRepository),
-        getComments = GetComments(appRepository),
         saveUser = SaveUser(appRepository),
         saveUserWithNewImage = SaveUserWithNewImage(appRepository)
     )

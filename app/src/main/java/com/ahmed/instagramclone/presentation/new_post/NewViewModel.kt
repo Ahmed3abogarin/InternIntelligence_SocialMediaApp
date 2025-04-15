@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.posts_usecases.PostUseCases
 import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.util.getImageByteArray
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewViewModel @Inject constructor(
-    private val appUseCases: AppUseCases,
+    private val postUseCases: PostUseCases,
     private val application: Application
 ) : ViewModel() {
 
@@ -35,7 +35,7 @@ class NewViewModel @Inject constructor(
 
     private fun uploadPost(description: String, byteArray: ByteArray) {
         viewModelScope.launch {
-            appUseCases.uploadPost(
+            postUseCases.uploadPost(
                 id = UUID.randomUUID().toString(),
                 description = description,
                 byteArray = byteArray

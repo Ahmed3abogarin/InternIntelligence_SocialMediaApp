@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.StoryWithAuthor
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.posts_usecases.PostUseCases
 import com.ahmed.instagramclone.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val auth: FirebaseAuth,
-    private val appUseCases: AppUseCases,
+    private val postUseCases: PostUseCases,
+    private val appUseCases: AppUseCases
 ) : ViewModel() {
     private val _state = mutableStateOf<Resource<List<PostWithAuthor>>?>(null)
     val state: State<Resource<List<PostWithAuthor>>?> = _state
@@ -47,7 +49,7 @@ class HomeViewModel @Inject constructor(
 
     private fun unlikePost(postId: String) {
         viewModelScope.launch {
-            appUseCases.unlikePost(postId).collect {
+            postUseCases.unlikePost(postId).collect {
 
             }
         }
@@ -55,7 +57,7 @@ class HomeViewModel @Inject constructor(
 
     private fun likePost(postId: String) {
         viewModelScope.launch {
-            appUseCases.likePost(postId).collect {
+            postUseCases.likePost(postId).collect {
 
             }
         }
@@ -63,7 +65,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getPosts() {
         viewModelScope.launch {
-            appUseCases.getPosts().collect {
+            postUseCases.getPosts().collect {
                 _state.value = it
             }
         }

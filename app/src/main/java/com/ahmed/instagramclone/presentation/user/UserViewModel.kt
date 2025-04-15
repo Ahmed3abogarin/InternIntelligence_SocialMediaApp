@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.posts_usecases.PostUseCases
 import com.ahmed.instagramclone.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val appUseCases: AppUseCases,
+    private val postUseCases: PostUseCases,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -63,7 +65,7 @@ class UserViewModel @Inject constructor(
 
     private fun getUserPosts(userId: String){
         viewModelScope.launch {
-            appUseCases.getUserPosts(userId).collectLatest {
+            postUseCases.getUserPosts(userId).collectLatest {
                 _postsState.value = it
             }
         }
@@ -80,8 +82,6 @@ class UserViewModel @Inject constructor(
     }
 
     private fun unfollowUser(targetUserId: String) {
-        Log.v("FOLLOWERSFROMVM","Unfollow called")
-
 
         viewModelScope.launch {
             appUseCases.unfollowUser(

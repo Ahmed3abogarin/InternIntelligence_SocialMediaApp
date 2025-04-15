@@ -8,7 +8,7 @@ import com.ahmed.instagramclone.util.RegisterFieldsState
 import com.ahmed.instagramclone.util.RegisterValidation
 import com.ahmed.instagramclone.util.Resource
 import com.ahmed.instagramclone.domain.model.User
-import com.ahmed.instagramclone.domain.usecases.AppUseCases
+import com.ahmed.instagramclone.domain.usecases.authUsecases.AuthUseCases
 import com.ahmed.instagramclone.util.validateEmail
 import com.ahmed.instagramclone.util.validatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ data class FieldsState(
 )
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val appUseCases: AppUseCases
+    private val authUseCases: AuthUseCases
 ):ViewModel() {
 
     private val _state = mutableStateOf<Resource<Unit>?>(null)
@@ -34,7 +34,7 @@ class RegisterViewModel @Inject constructor(
     fun createNewUser(user: User,password: String, confirmPassword: String){
         viewModelScope.launch {
             if (checkValidation(user = user, password = password, confirmPassword = confirmPassword)){
-                appUseCases.createNewUser(user = user, password = password).collect{
+                authUseCases.createNewUser(user = user, password = password).collect{
                     _state.value = it
                 }
             }else{
