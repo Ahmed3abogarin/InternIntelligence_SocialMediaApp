@@ -180,50 +180,56 @@ class AppRepositoryImpl @Inject constructor(
 
 
     override fun getUserStories() = flow {
-        emit(Resource.Loading())
-        val currentUser = getUser(auth.currentUser!!.uid)
-        val ss = mutableListOf<List<StoryWithAuthor>>()
 
-        try {
-            currentUser.collect {
-                when (it) {
-                    is Resource.Success -> {
-                        it.data?.followers?.forEach { id ->
-                            val ref =
-                                db.collection("Instagram_user").document(id).collection("story")
-                                    .get().await()
-                            val userStory = ref.toObjects(Story::class.java)
+        if (auth.uid != null){
+            emit(Resource.Loading())
+            val currentUser = getUser(auth.currentUser!!.uid)
+            val ss = mutableListOf<List<StoryWithAuthor>>()
+
+            try {
+                currentUser.collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            it.data?.followers?.forEach { id ->
+                                val ref =
+                                    db.collection("Instagram_user").document(id).collection("story")
+                                        .get().await()
+                                val userStory = ref.toObjects(Story::class.java)
 
 
-                            val storyWithAuthor = userStory.mapNotNull { story ->
-                                val author = getUser(story.authorId)
-                                    .filterIsInstance<Resource.Success<User>>()
-                                    .map { user -> user.data }
-                                    .catch { emit(User()) }
-                                    .firstOrNull()
+                                val storyWithAuthor = userStory.mapNotNull { story ->
+                                    val author = getUser(story.authorId)
+                                        .filterIsInstance<Resource.Success<User>>()
+                                        .map { user -> user.data }
+                                        .catch { emit(User()) }
+                                        .firstOrNull()
 
-                                StoryWithAuthor(story = story, author = author ?: User())
-                            }
+                                    StoryWithAuthor(story = story, author = author ?: User())
+                                }
 
 //                            storyWithAuthor[0].let {
 //                                Log.v("STORY", it.toString())
 //                            }
 
-                            userStory.let {
-                                ss.add(storyWithAuthor)
+                                userStory.let {
+                                    ss.add(storyWithAuthor)
+                                }
                             }
+                            emit(Resource.Success(ss))
                         }
-                        emit(Resource.Success(ss))
+
+                        else -> Unit
                     }
-
-                    else -> Unit
                 }
-            }
 
-        } catch (e: Exception) {
-            Log.v("StoryUSERS", e.message.toString())
-            emit(Resource.Error(e.message.toString()))
+            } catch (e: Exception) {
+                Log.v("StoryUSERS", e.message.toString())
+                emit(Resource.Error(e.message.toString()))
+            }
         }
+
+
+
     }
 
 

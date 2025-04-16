@@ -30,7 +30,7 @@ object PostModule {
         auth: FirebaseAuth,
         firebaseFireStore: FirebaseFirestore,
         storage: FirebaseStorage,
-    ) = PostRepositoryImpl(auth, firebaseFireStore, storage)
+    ): PostRepository = PostRepositoryImpl(auth, firebaseFireStore, storage)
 
 
     @Provides

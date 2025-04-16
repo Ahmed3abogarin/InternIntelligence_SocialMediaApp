@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
     private val _stories = mutableStateOf<Resource<MutableList<List<StoryWithAuthor>>>?>(null)
     val stories = _stories
 
-    val currentUserId = auth.currentUser!!.uid
+    val currentUserId = auth.currentUser?.uid
 
 
     init {

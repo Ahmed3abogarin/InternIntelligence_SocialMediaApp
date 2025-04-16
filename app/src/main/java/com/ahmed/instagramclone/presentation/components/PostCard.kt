@@ -59,7 +59,7 @@ import com.ahmed.instagramclone.util.Resource
 @Composable
 fun PostCard(
     post: PostWithAuthor,
-    currentUserId: String,
+    currentUserId: String?,
     event: (PostEvent) -> Unit,
     onCommentClicked: (String) -> Unit,
 ) {
@@ -277,7 +277,7 @@ fun PostsList(
     onCommentClicked: (String) -> Unit,
     event: (PostEvent) -> Unit,
     navigateToMessages: () -> Unit,
-    currentUserId: String,
+    currentUserId: String?,
 ) {
     val context = LocalContext.current
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {

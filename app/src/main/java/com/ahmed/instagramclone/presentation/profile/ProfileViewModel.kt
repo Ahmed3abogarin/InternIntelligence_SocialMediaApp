@@ -17,8 +17,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val appUseCases: AppUseCases,
-    private val postUseCases: PostUseCases
-): ViewModel() {
+    private val postUseCases: PostUseCases,
+) : ViewModel() {
 
     private val _state = mutableStateOf<Resource<User?>?>(null)
     val state = _state
@@ -32,18 +32,22 @@ class ProfileViewModel @Inject constructor(
         getPosts()
     }
 
-    private fun getUser(){
+    private fun getUser() {
         viewModelScope.launch {
-            appUseCases.getUser(auth.currentUser!!.uid).collect{
-                _state.value = it
+            auth.currentUser?.uid?.let {
+                appUseCases.getUser(auth.currentUser!!.uid).collect {
+                    _state.value = it
+                }
             }
         }
     }
 
-    private fun getPosts(){
+    private fun getPosts() {
         viewModelScope.launch {
-            postUseCases.getUserPosts(auth.currentUser!!.uid).collect{
-                _postsState.value = it
+            auth.currentUser?.uid?.let {
+                postUseCases.getUserPosts(auth.currentUser!!.uid).collect {
+                    _postsState.value = it
+                }
             }
         }
     }
