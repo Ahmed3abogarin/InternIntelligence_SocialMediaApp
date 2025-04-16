@@ -78,7 +78,7 @@ fun UserScreen(
     event: (UserEvent) -> Unit,
     navigateToUserStory: (String) -> Unit,
     navigateToChat: (User) -> Unit,
-    navigateToFollowers: (List<String>) -> Unit,
+    navigateToFollowers: (List<String>, String) -> Unit,
     navigateToDetails: (PostWithAuthor) -> Unit
 ) {
 
@@ -182,7 +182,7 @@ fun UserScreen(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                                 Text(
-                                    modifier = Modifier.clickable { navigateToFollowers(user.followers) },
+                                    modifier = Modifier.clickable { navigateToFollowers(user.followers,"Followers") },
                                     text = followers.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -196,7 +196,7 @@ fun UserScreen(
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    modifier = Modifier.clickable { navigateToFollowers(user.following) },
+                                    modifier = Modifier.clickable { navigateToFollowers(user.following,"Following") },
                                     text = user.following.size.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,

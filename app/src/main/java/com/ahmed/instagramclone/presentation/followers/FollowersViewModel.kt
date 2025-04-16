@@ -1,6 +1,7 @@
 package com.ahmed.instagramclone.presentation.followers
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,26 +21,33 @@ class FollowersViewModel @Inject constructor(
     private val _state = mutableStateListOf<User>()
     val state = _state
 
+    private val _text = mutableStateOf("")
+    val text = _text
+
     init {
         savedStateHandle.get<String>("ids")?.let {
             val list = it.split(",")
             getFollowersFollowing(list)
         }
+        _text.value = savedStateHandle.get<String>("title") ?: ""
     }
 
     private fun getFollowersFollowing(ids: List<String>) {
         viewModelScope.launch {
             ids.forEach {
-                appUseCases.getUser(it).collect { state ->
-                    when (state) {
-                        is Resource.Success -> {
-                            state.data?.let { user ->
-                                _state.add(user)
+                launch {
+                    appUseCases.getUser(it).collect { state ->
+                        when (state) {
+                            is Resource.Success -> {
+                                state.data?.let { user ->
+                                    _state.add(user)
+                                }
                             }
+                            else -> Unit
                         }
-                        else -> Unit
                     }
                 }
+
             }
         }
     }

@@ -253,8 +253,8 @@ fun AppNavigatorScreen() {
                     navigateToChat = { user ->
                         navigateToChat(navController, user)
                     },
-                    navigateToFollowers = { ids ->
-                        navigateToFollowers(navController, ids)
+                    navigateToFollowers = { ids, header ->
+                        navigateToFollowers(navController, ids,header)
 
                     },
                     navigateToDetails = {post ->
@@ -333,9 +333,10 @@ fun AppNavigatorScreen() {
 
             }
 
-            composable("followersScreen/{ids}") {
+            composable("followersScreen/{ids}/{title}") {
                 val followersVM: FollowersViewModel = hiltViewModel()
                 FollowersScreen(
+                    text = followersVM.text.value,
                     state = followersVM.state,
                     navigateToUser = { userId -> navigateToUserDetails(navController, userId) },
                     navigateToUp = { navController.navigateUp() })
@@ -427,9 +428,9 @@ private fun navigateToUserDetails(navController: NavController, userId: String) 
 
 }
 
-private fun navigateToFollowers(navController: NavController, idss: List<String>) {
+private fun navigateToFollowers(navController: NavController, idss: List<String>,header: String) {
     val ids = idss.joinToString(",")
-    navController.navigate(route = "followersScreen/$ids")
+    navController.navigate(route = "followersScreen/$ids/$header")
 
 }
 
