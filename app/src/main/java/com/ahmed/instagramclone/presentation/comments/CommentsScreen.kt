@@ -105,8 +105,8 @@ fun CommentsScreen(
                                     .padding(horizontal = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
-                                items(it.asReversed()) {
-                                    CommentCard(it)
+                                items(it.asReversed()) { comment ->
+                                    CommentCard(comment)
                                 }
                             }
                         }
@@ -163,6 +163,7 @@ fun CommentsScreen(
                             postId,
                             commentTxt = commentTxt
                         )
+                        commentTxt = ""
                     },
                     colors = IconButtonDefaults.iconButtonColors(containerColor = SendColor)
                 ) {

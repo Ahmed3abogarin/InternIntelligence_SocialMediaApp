@@ -55,8 +55,21 @@ class ChatRepositoryImpl @Inject constructor(
             }
 
 
-        // Add the sender to receiver chat list
+        // This for the receiver to see who sent him a message
+        ref.child("UserChats").child(receiverId).child(senderId).setValue(message)
+            .addOnSuccessListener {
+                Log.v("CHAT", "chat send successfully")
+            }.addOnFailureListener {
+                Log.v("CHAT", "is failed")
 
+                it.message?.let { msg ->
+                    Log.v("CHAT", msg)
+                }
+            }
+
+
+
+        // This is for the sender to see whom he sent the message to
         ref.child("UserChats").child(senderId).child(receiverId).setValue(message)
             .addOnSuccessListener {
                 Log.v("CHAT", "chat send successfully")
