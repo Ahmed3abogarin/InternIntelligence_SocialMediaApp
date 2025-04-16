@@ -36,7 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
     override fun signIn(email: String, password: String) = flow {
         try {
             emit(Resource.Loading())
-            auth.signInWithEmailAndPassword(email, password)
+            auth.signInWithEmailAndPassword(email, password).await()
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             Log.v("TAGYTOOL", e.message.toString())

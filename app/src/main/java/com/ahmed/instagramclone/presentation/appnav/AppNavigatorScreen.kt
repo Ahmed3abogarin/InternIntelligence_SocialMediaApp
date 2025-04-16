@@ -206,7 +206,11 @@ fun AppNavigatorScreen() {
                             post,
                             navigateToUp = { navController.navigateUp() },
                             currentUserId = homeViewmodel.currentUserId,
-                            event = homeViewmodel::onEvent
+                            event = homeViewmodel::onEvent,
+                            onCommentClicked = { id ->
+                                showBottomDialog = true
+                                postId = id
+                            }
                         )
                     }
             }
@@ -254,11 +258,11 @@ fun AppNavigatorScreen() {
                         navigateToChat(navController, user)
                     },
                     navigateToFollowers = { ids, header ->
-                        navigateToFollowers(navController, ids,header)
+                        navigateToFollowers(navController, ids, header)
 
                     },
-                    navigateToDetails = {post ->
-                        navigateToPostDetails(navController,post)
+                    navigateToDetails = { post ->
+                        navigateToPostDetails(navController, post)
                     }
                 )
 
@@ -428,7 +432,7 @@ private fun navigateToUserDetails(navController: NavController, userId: String) 
 
 }
 
-private fun navigateToFollowers(navController: NavController, idss: List<String>,header: String) {
+private fun navigateToFollowers(navController: NavController, idss: List<String>, header: String) {
     val ids = idss.joinToString(",")
     navController.navigate(route = "followersScreen/$ids/$header")
 
