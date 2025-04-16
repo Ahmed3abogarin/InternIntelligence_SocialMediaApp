@@ -134,7 +134,7 @@ fun ProfileScreen(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "0",
+                                text = (posts?.data?.size ?: 0).toString(),
                                 fontSize = 26.sp,
                                 fontWeight = FontWeight.SemiBold,
                             )
