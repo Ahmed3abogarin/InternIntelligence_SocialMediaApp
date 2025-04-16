@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    state: Resource<User?>,
+    state: Resource<User?>?,
     posts: Resource<List<PostWithAuthor>>?,
     navigateToUserStory: (String) -> Unit,
     navigateToEdit: () -> Unit,
@@ -75,7 +75,7 @@ fun ProfileScreen(
         derivedStateOf { pagerState.currentPage }
     }
 
-    state.data?.let {
+    state?.data?.let {
         val user = it
 
         Column(

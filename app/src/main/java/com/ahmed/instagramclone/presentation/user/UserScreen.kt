@@ -61,9 +61,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
+import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.domain.model.User
 import com.ahmed.instagramclone.ui.theme.SendColor
 import com.ahmed.instagramclone.util.Resource
@@ -79,7 +79,7 @@ fun UserScreen(
     navigateToUserStory: (String) -> Unit,
     navigateToChat: (User) -> Unit,
     navigateToFollowers: (List<String>, String) -> Unit,
-    navigateToDetails: (PostWithAuthor) -> Unit
+    navigateToDetails: (PostWithAuthor) -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()
@@ -179,10 +179,14 @@ fun UserScreen(
                                 )
                                 Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                             }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(modifier = Modifier.clickable {
+                                navigateToFollowers(
+                                    user.followers,
+                                    "Followers"
+                                )
+                            }, horizontalAlignment = Alignment.CenterHorizontally) {
 
                                 Text(
-                                    modifier = Modifier.clickable { navigateToFollowers(user.followers,"Followers") },
                                     text = followers.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -194,9 +198,13 @@ fun UserScreen(
                                     style = MaterialTheme.typography.titleMedium
                                 )
                             }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(modifier = Modifier.clickable {
+                                navigateToFollowers(
+                                    user.following,
+                                    "Following"
+                                )
+                            }, horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
-                                    modifier = Modifier.clickable { navigateToFollowers(user.following,"Following") },
                                     text = user.following.size.toString(),
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -233,7 +241,10 @@ fun UserScreen(
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.outlinedButtonColors(containerColor = SendColor)
                         ) {
-                            Text(text = if (isFollowing.value) "Following" else "Follow",color= Color.White)
+                            Text(
+                                text = if (isFollowing.value) "Following" else "Follow",
+                                color = Color.White
+                            )
                         }
                         OutlinedButton(
                             modifier = Modifier.weight(1f),
@@ -335,7 +346,8 @@ fun UserScreen(
                                         ) {
                                             items(list) { post ->
                                                 AsyncImage(
-                                                    model = ImageRequest.Builder(context).data(post.post.image)
+                                                    model = ImageRequest.Builder(context)
+                                                        .data(post.post.image)
                                                         .build(),
                                                     modifier = Modifier
                                                         .height(200.dp)
@@ -349,17 +361,26 @@ fun UserScreen(
                                     }
 
                                 }
+
                                 1 -> {
-                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         Text(text = "No Reels")
                                     }
 
                                 }
+
                                 2 -> {
-                                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         Text(text = "No Tags")
                                     }
                                 }
+
                                 else -> Unit
                             }
                         }

@@ -235,7 +235,7 @@ fun AppNavigatorScreen() {
             }
             composable(Route.ProfileScreen.route) {
                 ProfileScreen(
-                    state = profileViewModel.state.value!!,
+                    state = profileViewModel.state.value,
                     posts = profileViewModel.postsState.value,
                     navigateToUserStory = {},
                     navigateToEdit = { navController.navigate(Route.EditInfoScreen.route) }
