@@ -180,10 +180,13 @@ fun UserScreen(
                                 Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                             }
                             Column(modifier = Modifier.clickable {
-                                navigateToFollowers(
-                                    user.followers,
-                                    "Followers"
-                                )
+                                if (user.followers.isNotEmpty()){
+                                    navigateToFollowers(
+                                        user.followers,
+                                        "Followers"
+                                    )
+                                }
+
                             }, horizontalAlignment = Alignment.CenterHorizontally) {
 
                                 Text(
@@ -199,10 +202,13 @@ fun UserScreen(
                                 )
                             }
                             Column(modifier = Modifier.clickable {
-                                navigateToFollowers(
-                                    user.following,
-                                    "Following"
-                                )
+                                if (user.following.isNotEmpty()){
+                                    navigateToFollowers(
+                                        user.following,
+                                        "Following"
+                                    )
+                                }
+
                             }, horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text(
                                     text = user.following.size.toString(),

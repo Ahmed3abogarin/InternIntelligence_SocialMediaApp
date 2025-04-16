@@ -1,6 +1,5 @@
 package com.ahmed.instagramclone.presentation.profile
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,9 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -57,6 +53,7 @@ import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.presentation.components.UserPostsList
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
 
@@ -66,6 +63,8 @@ fun ProfileScreen(
     state: Resource<User?>?,
     posts: Resource<List<PostWithAuthor>>?,
     navigateToUserStory: (String) -> Unit,
+    navigateToFollowers: (List<String>, String) -> Unit,
+    navigateToDetails: (PostWithAuthor) -> Unit,
     navigateToEdit: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -141,8 +140,18 @@ fun ProfileScreen(
                             )
                             Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                         }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Log.v("USERINMANIN", state.data.firstName)
+                        Column(
+                            modifier = Modifier.clickable {
+                                if (user.followers.isNotEmpty()) {
+                                    navigateToFollowers(
+                                        user.followers,
+                                        "Followers"
+                                    )
+                                }
+
+                            },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
                                 text = user.followers.size.toString(),
                                 fontSize = 26.sp,
@@ -150,7 +159,14 @@ fun ProfileScreen(
                             )
                             Text(text = "followers", style = MaterialTheme.typography.titleMedium)
                         }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            modifier = Modifier.clickable {
+                                if (user.following.isNotEmpty()) {
+                                    navigateToFollowers(user.following, "Following")
+                                }
+                            },
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
                                 text = user.following.size.toString(),
                                 fontSize = 26.sp,
@@ -251,36 +267,7 @@ fun ProfileScreen(
                 when (index) {
                     0 -> {
                         posts?.data?.let { list ->
-                            if (list.isEmpty()) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "No posts",
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
-                                }
-                            }
-                            LazyVerticalStaggeredGrid(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                horizontalArrangement = Arrangement.spacedBy(1.dp),
-                                verticalItemSpacing = 1.dp,
-                                columns = StaggeredGridCells.Fixed(3),
-                            ) {
-                                items(list) { post ->
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(context).data(post.post.image)
-                                            .build(),
-                                        modifier = Modifier
-                                            .height(200.dp)
-                                            .width(195.dp),
-                                        contentScale = ContentScale.Crop,
-                                        contentDescription = "user account post image"
-                                    )
-                                }
-                            }
+                            UserPostsList(list, navigateToDetails = navigateToDetails)
                         }
                     }
 

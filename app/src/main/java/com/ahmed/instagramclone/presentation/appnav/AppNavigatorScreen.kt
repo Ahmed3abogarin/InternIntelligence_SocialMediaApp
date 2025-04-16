@@ -200,6 +200,17 @@ fun AppNavigatorScreen() {
                     navigateToPostDetails = { post -> navigateToPostDetails(navController, post) })
             }
             composable(Route.PostDetails.route) {
+
+                if (showBottomDialog && postId.isNotEmpty()) {
+                    CommentsScreen(
+                        state = commentVM.state.value,
+                        postId = postId,
+                        commentsViewModel = commentVM,
+                        sheetState = sheetState,
+                        onDismiss = { showBottomDialog = false })
+
+                }
+
                 navController.previousBackStackEntry?.savedStateHandle?.get<PostWithAuthor>("post")
                     ?.let { post ->
                         PostDetails(
@@ -238,7 +249,13 @@ fun AppNavigatorScreen() {
                     state = profileViewModel.state.value,
                     posts = profileViewModel.postsState.value,
                     navigateToUserStory = {},
-                    navigateToEdit = { navController.navigate(Route.EditInfoScreen.route) }
+                    navigateToEdit = { navController.navigate(Route.EditInfoScreen.route) },
+                    navigateToFollowers = { list, text ->
+                        navigateToFollowers(navController, list, text)
+                    },
+                    navigateToDetails = { post ->
+                        navigateToPostDetails(navController, post)
+                    }
                 )
             }
             composable("userScreen/{user_id}") {
