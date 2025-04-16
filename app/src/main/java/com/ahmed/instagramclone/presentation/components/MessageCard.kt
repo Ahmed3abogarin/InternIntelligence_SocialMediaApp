@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -32,8 +31,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.Message
-import com.ahmed.instagramclone.ui.theme.Color4
-import com.ahmed.instagramclone.ui.theme.Color7
 import com.ahmed.instagramclone.ui.theme.InstagramCloneTheme
 import com.ahmed.instagramclone.ui.theme.ShimmerColor
 import com.ahmed.instagramclone.util.toFormattedTime
@@ -45,8 +42,10 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
 
     val messageColor = if (isMine) {
         listOf(
-            Color7,
-            Color4
+            Color(0xFFB726FF),
+            Color(0xFF7C1EFF)
+//            Color7,
+//            Color4
 //            Color3,
         )
 
@@ -59,17 +58,17 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
 
     val messageShape = if (isMine) {
         RoundedCornerShape(
-            topEnd = 50.dp,
-            topStart = 50.dp,
-            bottomStart = 50.dp,
-            bottomEnd = 50.dp
+            topStart = 20.dp,
+            topEnd = 4.dp,
+            bottomEnd = 20.dp,
+            bottomStart = 20.dp
         )
     } else {
         RoundedCornerShape(
-            topStart =50.dp,
-            topEnd = 50.dp,
-            bottomStart = 50.dp,
-            bottomEnd = 50.dp
+            topStart = 4.dp,
+            topEnd = 20.dp,
+            bottomEnd = 20.dp,
+            bottomStart = 20.dp
         )
     }
 
@@ -112,8 +111,7 @@ fun MessageCard(userImage: String, message: Message, isMine: Boolean) {
         ) {
             Box(
                 modifier = Modifier
-                    .clip(messageShape)
-                    .background(brush = Brush.sweepGradient(messageColor, center = Offset.Infinite))
+                    .background(brush = Brush.horizontalGradient(messageColor), shape = messageShape)
             ) {
                 Text(
                     fontSize = 12.sp,
