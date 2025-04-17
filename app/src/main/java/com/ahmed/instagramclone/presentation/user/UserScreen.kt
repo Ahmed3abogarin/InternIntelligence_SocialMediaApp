@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -30,7 +27,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +61,8 @@ import com.ahmed.instagramclone.R
 import com.ahmed.instagramclone.domain.model.PostWithAuthor
 import com.ahmed.instagramclone.domain.model.ProfileTabs
 import com.ahmed.instagramclone.domain.model.User
+import com.ahmed.instagramclone.presentation.components.AppLoading
+import com.ahmed.instagramclone.presentation.components.UserPostsList
 import com.ahmed.instagramclone.ui.theme.SendColor
 import com.ahmed.instagramclone.util.Resource
 import kotlinx.coroutines.launch
@@ -180,7 +178,7 @@ fun UserScreen(
                                 Text(text = "posts", style = MaterialTheme.typography.titleMedium)
                             }
                             Column(modifier = Modifier.clickable {
-                                if (user.followers.isNotEmpty()){
+                                if (user.followers.isNotEmpty()) {
                                     navigateToFollowers(
                                         user.followers,
                                         "Followers"
@@ -202,7 +200,7 @@ fun UserScreen(
                                 )
                             }
                             Column(modifier = Modifier.clickable {
-                                if (user.following.isNotEmpty()){
+                                if (user.following.isNotEmpty()) {
                                     navigateToFollowers(
                                         user.following,
                                         "Following"
@@ -332,40 +330,10 @@ fun UserScreen(
                             when (it) {
                                 0 -> {
                                     posts?.data?.let { list ->
-                                        if (list.isEmpty()) {
-                                            Box(
-                                                modifier = Modifier.fillMaxSize(),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Text(
-                                                    text = "No posts",
-                                                    style = MaterialTheme.typography.titleSmall
-                                                )
-                                            }
-                                        }
-                                        LazyVerticalStaggeredGrid(
-                                            modifier = Modifier
-                                                .fillMaxSize(),
-                                            horizontalArrangement = Arrangement.spacedBy(1.dp),
-                                            verticalItemSpacing = 1.dp,
-                                            columns = StaggeredGridCells.Fixed(3),
-                                        ) {
-                                            items(list) { post ->
-                                                AsyncImage(
-                                                    model = ImageRequest.Builder(context)
-                                                        .data(post.post.image)
-                                                        .build(),
-                                                    modifier = Modifier
-                                                        .height(200.dp)
-                                                        .width(205.dp)
-                                                        .clickable { navigateToDetails(post) },
-                                                    contentScale = ContentScale.Fit,
-                                                    contentDescription = "user account post image"
-                                                )
-                                            }
+                                        UserPostsList(list) { post ->
+                                            navigateToDetails(post)
                                         }
                                     }
-
                                 }
 
                                 1 -> {
@@ -403,9 +371,7 @@ fun UserScreen(
         }
 
         is Resource.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            AppLoading()
         }
 
         else -> Unit
