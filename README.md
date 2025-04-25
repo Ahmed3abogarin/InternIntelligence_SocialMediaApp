@@ -21,5 +21,11 @@ for users. Just like Intagram.
 # Screenshots
 ![Extagram app](https://github.com/user-attachments/assets/81f1ab72-3f14-4398-852c-876454f82887)
 
+# Demo
+
+
+https://github.com/user-attachments/assets/8e049073-5fcf-489c-a804-65c284fffca5
+
+
 App trailer:
 https://youtu.be/9WNlEGjNXLc
