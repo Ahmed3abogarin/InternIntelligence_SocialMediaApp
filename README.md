@@ -12,6 +12,7 @@ for users. Just like Intagram.
 - Create Screen: create posts
 - Profile screen: Update your profile photo and name, add a bio, and view your followers and the people you're following.
 - Double click the post to like it, with animate popup like icon
+- Shimmer effect for loading : that most modren apps use
 # Technologies
 - Kotlin
 - Jetpack compose
